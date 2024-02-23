@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:first_flutter_demo_app/main.dart';
 import 'package:first_flutter_demo_app/startScreen.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,9 @@
+import 'package:first_flutter_demo_app/drawerScreen.dart';
+import 'package:first_flutter_demo_app/tabBarMainScreen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
+import 'checkBoxAndRadioScreen.dart';
+import 'nestedTabBarMainScreen.dart';
 import 'splashScreen.dart';
 
 void main() {
@@ -55,24 +59,56 @@ class _MyHomePageState extends State<MyHomePage> {
 
               },
             ),
+            SizedBox(height: 10,),
             ElevatedButton(
               child: Text("Dialog With Input"),
               onPressed: (){
                 showAlertDialogWithInput(context);
               },
             ),
+            SizedBox(height: 10,),
             ElevatedButton(
               child: Text("Confirmation Dialog"),
               onPressed: (){
                 showAlertDialogWithConfirmation(context);
               },
             ),
+            SizedBox(height: 10,),
             ElevatedButton(
               child: Text("Choose Options Dialog"),
               onPressed: (){
                 showAlertDialogWithMultipleOptions(context);
               },
             ),
+            SizedBox(height: 10,),
+            ElevatedButton(
+              child: Text("TabBar Demo"),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>TabBarMainScreen()));
+              },
+            ),
+            SizedBox(height: 10,),
+            ElevatedButton(
+              child: Text("Nested TabBar Demo"),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>NestedTabBarMainScreen()));
+              },
+            ),
+            SizedBox(height: 10,),
+            ElevatedButton(
+              child: Text("Drawer"),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>DrawerScreen()));
+              },
+            ),
+            SizedBox(height: 10,),
+            ElevatedButton(
+              child: Text("CheckBox And Radio Button"),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CheckBoxAndRadioButtonScreen()));
+              },
+            ),
+            SizedBox(height: 10,),
           ],
         ),
       ),
