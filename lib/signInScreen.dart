@@ -2,6 +2,8 @@ import 'package:first_flutter_demo_app/main.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,6 +17,26 @@ class SignInScreen extends StatefulWidget {
 class SignInState extends State<SignInScreen> {
   var emailController = TextEditingController();
   var passController = TextEditingController();
+
+  Future loginApi() async {
+    // Make a POST request
+    var response = await http.post(
+      Uri.https('dummyjson.com', '/auth/login'),
+      body: {'username': emailController.text.toString(), 'password': passController.text.toString()},
+    );
+
+    if (response.statusCode == 200) {
+      showSnackBar('Login successful');
+      var pref=await SharedPreferences.getInstance();
+      pref.setBool("isLogin", true);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MyHomePage()));
+    } else {
+      showSnackBar('Please provide valid credentials');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +83,8 @@ class SignInState extends State<SignInScreen> {
                 padding: const EdgeInsets.only(left: 15, right: 15, top: 30),
                 child: TextField(
                   controller: emailController,
-                  decoration: editText('Email ID', 50, false),
+                  decoration: editText('User name', 50, false),
                   maxLines: 1,
-                  keyboardType: TextInputType.emailAddress,
                 ),
               ),
               Padding(
@@ -85,11 +106,12 @@ class SignInState extends State<SignInScreen> {
                     height: 60,
                     child: roundedElevatedButton('LOGIN', Colors.black, () async {
                       var pref=await SharedPreferences.getInstance();
-                      String? emailId=pref.getString("emailId");
-                      String? password=pref.getString("password");
-
-                      if(emailController.text.toString() == emailId && passController.text.toString() == password){
+                      /*String? emailId=pref.getString("emailId");
+                      String? password=pref.getString("password");*/
+                      loginApi();
+                      /*if(emailController.text.toString() == emailId && passController.text.toString() == password){
                         pref.setBool("isLogin", true);
+                        _login();
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -109,15 +131,31 @@ class SignInState extends State<SignInScreen> {
 
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
+                      }*/
 
 
-                    })),
+                    },50)),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+  void showSnackBar(String msg){
+    var snackBar= SnackBar(
+        content: Text(msg),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: (){
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        )
+
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

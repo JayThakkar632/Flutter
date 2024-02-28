@@ -27,7 +27,7 @@ class StartScreen extends StatelessWidget {
                       height: 60,
                       child: roundedElevatedButton('SIGN UP',Colors.black,(){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpScreen()));
-                      })),
+                      },50)),
                 ),
                 SizedBox(height: 20,),
                 Padding(

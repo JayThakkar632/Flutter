@@ -6,6 +6,11 @@ TextStyle toolBarTitle() {
       color: Colors.white, fontFamily: 'Anta-Regular', fontSize: 22);
 }
 
+TextStyle textStyle(Color color, String fontFamily, double fontSize) {
+  return TextStyle(
+      color: color, fontFamily: fontFamily, fontSize: fontSize);
+}
+
 TextStyle styleForButton(Color? textColor) {
   return TextStyle(color: textColor, fontFamily: 'Anta-Regular', fontSize: 16);
 }
@@ -24,7 +29,7 @@ InputDecoration editText(String hintText,double radius,bool isValidate){
           borderRadius: BorderRadius.circular(radius)));
 }
 
-ElevatedButton roundedElevatedButton(String? text, Color? bgColor,VoidCallback onPressedCallback) {
+ElevatedButton roundedElevatedButton(String? text, Color? bgColor,VoidCallback onPressedCallback, double radius) {
   return ElevatedButton(
     onPressed: () {
       onPressedCallback();
@@ -35,7 +40,7 @@ ElevatedButton roundedElevatedButton(String? text, Color? bgColor,VoidCallback o
     ),
     style: ElevatedButton.styleFrom(
         backgroundColor: bgColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
   );
 }
 

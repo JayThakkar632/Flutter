@@ -147,7 +147,7 @@ class SignUpState extends State<SignUpScreen> {
                                     builder: (context) => SignInScreen()));
                           }
 
-                    })),
+                    },50)),
               ),
             ],
           ),
