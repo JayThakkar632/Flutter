@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:first_flutter_demo_app/loginScreen.dart';
 import 'package:first_flutter_demo_app/main.dart';
 import 'package:first_flutter_demo_app/startScreen.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +43,12 @@ void navigate(BuildContext context) async{
       });
     }else{
       Timer(const Duration(seconds: 5),(){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const StartScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
       });
     }
   }else{
     Timer(const Duration(seconds: 5),(){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const StartScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
     });
   }
 

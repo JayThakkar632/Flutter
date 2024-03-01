@@ -57,3 +57,17 @@ OutlinedButton roundedOutLinedButton(String? text, Color? bgColor,VoidCallback o
         backgroundColor: bgColor,side: BorderSide(color: Colors.black,width: 3))
   );
 }
+
+OutlinedButton roundedOutLinedButtonOne(String? text, Color? bgColor,VoidCallback onPressedCallback,Color?textColor,) {
+  return OutlinedButton(
+      onPressed: () {
+        onPressedCallback();
+      },
+      child: Text(
+        "$text",
+        style: styleForButton(textColor),
+      ),
+      style: OutlinedButton.styleFrom(
+          backgroundColor: bgColor,side: BorderSide(color: Colors.green,width: 1))
+  );
+}

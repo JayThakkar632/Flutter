@@ -41,10 +41,13 @@ dev_dependencies:
     sdk: flutter
   #shared_prefrences
   shared_preferences: ^2.2.2
+
   #http:
   http: ^1.2.0
   #font_awesome_flutter
   font_awesome_flutter: ^10.7.0
+  #email_validator
+  email_validator: ^2.1.17
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
