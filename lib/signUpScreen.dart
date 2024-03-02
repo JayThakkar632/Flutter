@@ -96,6 +96,7 @@ class SignUpState extends State<SignUpScreen> {
                     controller: phoneNumberController,
                     maxLines: 1,
                     decoration: editText('Phone Number', 50,false),
+                    maxLength: 10,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(10),

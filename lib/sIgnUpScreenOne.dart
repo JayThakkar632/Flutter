@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class SignUpScreenOne extends StatefulWidget{
   @override
@@ -41,29 +40,53 @@ class _SignUpState extends State<SignUp> {
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
   var nameController = TextEditingController();
-  bool isValidateEmail=false;
+  var phoneNumberController = TextEditingController();
+  var dateOfBirtController = TextEditingController();
+  var countryController = TextEditingController();
+  var stateController = TextEditingController();
+  var cityController = TextEditingController();
+  bool isValidateEmail=true;
   bool isValidatePassword=false;
   bool isValidateName=false;
+  bool isValidatePhoneNumber=false;
   bool isValidateConfirmPassword=false;
+  bool isValidateDateOfBirth=false;
+  bool isValidateCountry=false;
+  bool isValidateState=false;
+  bool isValidateCity=false;
+  var opacityOfImage=1.0;
+  var selectedGender="";
+
   @override
   Widget build(BuildContext context) {
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      setState(() {
+        visible ? opacityOfImage=0.5 : opacityOfImage=1.0;
+      });
+    });
     return Stack(
       children: [
         Positioned(
           right: -100,
           top: -150,
-          child: Transform(
-              transform: Matrix4.rotationZ(0.8),
-              alignment: Alignment.center,
-              child: Image.asset('assets/images/leaf.png',height: 500,width: 300,fit: BoxFit.contain,)),
+          child: Opacity(
+            opacity: opacityOfImage,
+            child: Transform(
+                transform: Matrix4.rotationZ(0.8),
+                alignment: Alignment.center,
+                child: Image.asset('assets/images/leaf.png',height: 500,width: 300,fit: BoxFit.contain,)),
+          ),
         ),
         Positioned(
           right: -60,
           top: 0,
-          child: Transform(
-              transform: Matrix4.rotationZ(1.5),
-              alignment: Alignment.center,
-              child: Image.asset('assets/images/leaf.png',height: 500,width: 100,fit: BoxFit.contain,)),
+          child: Opacity(
+            opacity: opacityOfImage,
+            child: Transform(
+                transform: Matrix4.rotationZ(1.5),
+                alignment: Alignment.center,
+                child: Image.asset('assets/images/leaf.png',height: 500,width: 100,fit: BoxFit.contain,)),
+          ),
         ),
         Align(
           alignment: Alignment.bottomCenter,
@@ -105,7 +128,7 @@ class _SignUpState extends State<SignUp> {
                       cursorColor: Colors.green,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          labelText: 'Your email', errorText: isValidateEmail ? "Please enter email" : null ,
+                          labelText: 'Your email', errorText: !isValidateEmail ? "Please enter email" : null ,
                           labelStyle: const TextStyle(
                             color: Colors.grey, //<-- SEE HERE
                           ),
@@ -156,6 +179,123 @@ class _SignUpState extends State<SignUp> {
                           //suffix: Text("Forgot?",style: TextStyle(color: Colors.green),)
                       ),
                     ),
+                    const SizedBox(height:15),
+                    TextField(
+                      controller: phoneNumberController,
+                      maxLines: 1,
+                      cursorColor: Colors.green,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          labelText: 'Phone Number', errorText: isValidatePhoneNumber ? "Please enter phone number":null ,
+                          labelStyle: const TextStyle(
+                            color: Colors.grey, //<-- SEE HERE
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.green
+                              )
+                          )
+                      ),
+                    ),
+                    /*const SizedBox(height:15),
+                    DropdownButtonFormField<String>(
+                      value: selectedGender,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select a gender';
+                        }
+                        return null;
+                      },
+                      items: <String>['Male', 'Female', 'Other']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Select Gender',
+                        labelText: 'Gender',
+                      ),
+                    ),*/
+                    const SizedBox(height:15),
+                    TextField(
+                      controller: dateOfBirtController,
+                      cursorColor: Colors.green,
+                      canRequestFocus: false,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          labelText: 'Date Of Birth', errorText: isValidateDateOfBirth ? "Please enter Date of Birth":null ,
+                          labelStyle: const TextStyle(
+                            color: Colors.grey, //<-- SEE HERE
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.green
+                              )
+                          )
+                      ),
+                    ),
+                    const SizedBox(height:15),
+                    TextField(
+                      controller: countryController,
+                      cursorColor: Colors.green,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          labelText: 'Country', errorText: isValidateCountry ? "Please enter Country":null ,
+                          labelStyle: const TextStyle(
+                            color: Colors.grey, //<-- SEE HERE
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.green
+                              )
+                          )
+                      ),
+                    ),
+                    const SizedBox(height:15),
+                    TextField(
+                      controller: stateController,
+                      cursorColor: Colors.green,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          labelText: 'State', errorText: isValidateState ? "Please enter State":null ,
+                          labelStyle: const TextStyle(
+                            color: Colors.grey, //<-- SEE HERE
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.green
+                              )
+                          )
+                      ),
+                    ),
+                    const SizedBox(height:15),
+                    TextField(
+                      controller: cityController,
+                      cursorColor: Colors.green,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          labelText: 'City', errorText: isValidateCity ? "Please enter City":null ,
+                          labelStyle: const TextStyle(
+                            color: Colors.grey, //<-- SEE HERE
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.green
+                              )
+                          )
+                      ),
+                    ),
                     const SizedBox(height:45),
                     SizedBox(
                         height: 50,
@@ -172,14 +312,17 @@ class _SignUpState extends State<SignUp> {
                             }
                           }
                           setState(() {
-                            //isValidateEmail=EmailValidator.validate(emailController.text);
                             nameController.text.isEmpty ? isValidateName = true : isValidateName = false;
-                            emailController.text.isEmpty ? isValidateEmail = true : isValidateEmail = false;
+                            phoneNumberController.text.isEmpty ? isValidatePhoneNumber = true : isValidatePhoneNumber = false;
+                            isValidateEmail=EmailValidator.validate(emailController.text);
+                            //emailController.text.isEmpty ? isValidateEmail = true : isValidateEmail = false;
                             passwordController.text.isEmpty ? isValidatePassword = true : isValidatePassword = false;
                             confirmPasswordController.text.isEmpty ? isValidateConfirmPassword = true : isValidateConfirmPassword = false;
 
                           });
                         }, 30)),
+
+                    //DOB country state city, hobbies
                     const SizedBox(height: 30,),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),

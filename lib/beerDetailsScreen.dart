@@ -1,4 +1,4 @@
-import 'package:first_flutter_demo_app/pojo/beer_details.dart';
+import 'package:first_flutter_demo_app/pojo/BeerDetails.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

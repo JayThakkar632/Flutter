@@ -1,17 +1,24 @@
 import 'dart:convert';
-import 'package:first_flutter_demo_app/pojo/beer_details.dart';
+import 'package:first_flutter_demo_app/beerVIewScreen.dart';
+import 'package:first_flutter_demo_app/loginScreen.dart';
+import 'package:first_flutter_demo_app/pojo/BeerDetails.dart';
+import 'package:first_flutter_demo_app/sIgnUpScreenOne.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
+import 'package:first_flutter_demo_app/userListScreen.dart';
 import 'package:flutter/material.dart';
 import 'beerDetailsScreen.dart';
 import 'splashScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 var page = 1;
 List<BeerDetails> beers = [];
 bool isLoading = false;
 ScrollController scrollController = ScrollController();
-var textFiledSearch=TextEditingController();
-var searchingText="";
+var textFiledSearch = TextEditingController();
+var searchingText = "";
+
 
 late http.Response response;
 
@@ -50,7 +57,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -70,24 +76,24 @@ class BottomNavigationBarView extends StatefulWidget {
 class _BottomNavigationBarState extends State<BottomNavigationBarView> {
   int selectedIndex = 0;
 
-  /*static const List item = [
-    Text('Index 0: Beer'),
-    Text('Index 1: Search'),
-    Text('Index 2: Cart'),
-    Text('Index 3: Profile'),
-  ];*/
+  static const List item = [
+    Listing(),
+    Profile(),
+    Settings(),
+  ];
+  final List<String> appBarTitles = ['Home', 'Profile', 'Settings'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
-        title: Text("Home",style: toolBarTitle(),),
+        title: Text(appBarTitles[selectedIndex],
+          style: toolBarTitle(),
+        ),
         centerTitle: true,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
         unselectedItemColor: Colors.grey,
         currentIndex: selectedIndex,
         selectedItemColor: Colors.black,
@@ -96,23 +102,19 @@ class _BottomNavigationBarState extends State<BottomNavigationBarView> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: "",
+            label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: "",
+            icon: Icon(Icons.person),
+            label: "Profile",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: "",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.call),
-            label: "",
+            icon: Icon(Icons.settings),
+            label: "Settings",
           ),
         ],
       ),
-      body: const AllWineDetails(),
+      body: item.elementAt(selectedIndex),
     );
   }
 
@@ -123,334 +125,172 @@ class _BottomNavigationBarState extends State<BottomNavigationBarView> {
   }
 }
 
-class AllWineDetails extends StatefulWidget {
-  const AllWineDetails({super.key});
+class Listing extends StatefulWidget {
+  const Listing({super.key});
 
   @override
-  State<AllWineDetails> createState() => _AllWineDetailsState();
+  State<Listing> createState() => _ListingState();
 }
 
-class _AllWineDetailsState extends State<AllWineDetails> {
+class ColorName {
+  final Color color;
+  final String name;
 
-  //textOverflow
-  //screenUtils
-  @override
-  Widget build(BuildContext context) {
-    return const TopBeerDetails();
-  }
-
+  ColorName({required this.color, required this.name});
 }
 
-class TopBeerDetails extends StatefulWidget{
-  const TopBeerDetails({super.key});
-
-  @override
-  State<TopBeerDetails> createState() => _TopBeerDetailsState();
-}
-
-class _TopBeerDetailsState extends State<TopBeerDetails> {
-
-
-  @override
-  void initState() {
-    scrollController.addListener(scrolling);
-    getData(searchingText);
-    super.initState();
-  }
-
-  Future<void> getData(String text) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    if(text.isNotEmpty){
-      response= await http.get(Uri.parse('https://api.punkapi.com/v2/beers?page=$page&per_page=10&beer_name=$text'));
-    }else{
-      response = await http.get(Uri.parse('https://api.punkapi.com/v2/beers?page=$page&per_page=10'));
-    }
-
-    if (response.statusCode == 200) {
-      setState(() {
-        List<dynamic> decodedData = json.decode(response.body);
-        List<BeerDetails> parsedBeers = List<BeerDetails>.from(decodedData.map((data) => BeerDetails.fromJson(data)));
-        beers.addAll(parsedBeers);
-        isLoading = false;
-        page++;
-        if(beers.isEmpty){
-          page=1;
-          showSnackBar("no data found");
-        }
-      });
-    } else {
-      showSnackBar("Invalid");
-    }
-  }
-
-
-  void scrolling() {
-    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
-        !scrollController.position.outOfRange) {
-      getData(searchingText);
-    }
-  }
-
-  void search(String text)  {
-    page=1;
-    beers=[];
-    getData(text);
-  }
+class _ListingState extends State<Listing> {
+  final List<ColorName> arrayList = [
+    ColorName(color: Colors.red, name: 'Beer'),
+    ColorName(color: Colors.green, name: 'User Listing'),
+    ColorName(color: Colors.blue, name: 'Blue'),
+    ColorName(color: Colors.yellow, name: 'Yellow'),
+    ColorName(color: Colors.orange, name: 'Orange'),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: textFiledSearch,
-              decoration: editText("Search here",15.0,false),
-              onChanged: (value){
-                searchingText=value;
-                search(searchingText);
-              },
-            ),
-            ElevatedButton(onPressed: (){
-              searchingText=textFiledSearch.text.toString();
-              setState(() {
-                search(searchingText);
-              });
-            }, child: const Text("Search")),
-            Container(
-              height: 350,
-              margin: const EdgeInsets.all(12.0),
-              width: MediaQuery.sizeOf(context).width,
-              color: Colors.white,
-              child: ListView.builder(
-                controller: scrollController,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 0, top: 10, bottom: 10),
-                itemCount: beers.length,
-                itemBuilder: (context, index) {
-                  if(index == beers.length){
-                    return isLoading ? const CircularProgressIndicator() : const SizedBox();
-                  }else{
-                    return GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BeerDetailsScreen(beer: beers[index])));
-                      },
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width:200,
-                                  height:70,
-                                  child: Text(
-                                    beers[index].tagline!,
-                                    style: textStyle(
-                                      Colors.black,
-                                      'Anta-Regular',
-                                      22,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                    maxLines: 2,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 25,
-                                ),
-                                Card(
-                                  shadowColor: Colors.pinkAccent,
-                                  elevation: 5,
-                                  child: Container(
-                                    height: 193,
-                                    padding: const EdgeInsets.all(25),
-                                    width: MediaQuery.sizeOf(context).width*0.88,
-                                    decoration: BoxDecoration(
-                                      color: Colors.pinkAccent,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 200,
-                                          child: Text(
-                                            beers[index].name!,
-                                            style: textStyle(
-                                              Colors.white,
-                                              'Anta-Regular',
-                                              22,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          'italy, 13.5%',
-                                          style: textStyle(
-                                            Colors.white,
-                                            'Anta-Regular',
-                                            22,
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        ElevatedButton(
-                                            onPressed: () {}, child: const Text("975 p")),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ]),
-                          Positioned(
-                              right: 25,
-                              top: 15,
-                              child:
-                              Image.network(beers[index].imageUrl!, height: 200))
-                        ],
-                      ),
-                    );
-                  }
-                },
+    return Container(
+      height: MediaQuery.sizeOf(context).height,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              navigateToScreen(context, index);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: arrayList[index].color,
+                    borderRadius: BorderRadius.all(Radius.circular(50))),
+                height: 100,
+                child: Center(
+                    child: Text(
+                  arrayList[index].name,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                )),
               ),
             ),
-            LastOrder()
+          );
+        },
+        itemCount: arrayList.length,
+      ),
+    );
+  }
+
+  void navigateToScreen(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BeerViewScreen(),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const UserListScreen(),
+          ),
+        );
+        break;
+    }
+  }
+}
+
+class Profile extends StatefulWidget {
+  const Profile({super.key});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
+
+class Settings extends StatelessWidget {
+  const Settings({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: null,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            roundedElevatedButton("Logout", Colors.green, () {
+              showLogoutDialog(context);
+            }, 20),
+            const SizedBox(
+              height: 20,
+            ),
+            roundedElevatedButton("Delete Account", Colors.green, () {
+              showDeleteAccount(context);
+            }, 20),
           ],
         ),
       ),
     );
   }
-  void showSnackBar(String msg){
-    var snackBar= SnackBar(
-        content: Text(msg),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: (){
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        )
 
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-}
-
-class LastOrder extends StatefulWidget{
-  const LastOrder({super.key});
-
-  @override
-  State<LastOrder> createState() => _LastOrderState();
-}
-
-class _LastOrderState extends State<LastOrder> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(
-                "Last orders",
-                style: textStyle(
-                  Colors.black,
-                  'Anta-Regular',
-                  22,
-                ),
-                textAlign: TextAlign.start,
-              ),
-              const Spacer(),
-              Row(
-                children: [
-                  Text(
-                    "View all",
-                    style: textStyle(
-                      Colors.black,
-                      'Anta-Regular',
-                      18,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                  const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.black, // Adjust icon color as needed
-                  ),
-                ],
-              ),
-            ],
+  void showLogoutDialog(BuildContext context) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: const Text('Are you sure you wants to logout?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('No'),
           ),
-          const SizedBox(height: 25,),
-          SizedBox(
-            height: 250,
-            width: MediaQuery.sizeOf(context).width,
-            child: ListView.builder(
-              itemCount: beers.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return SizedBox(
-                  width: 210,
-                  height: 270,
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8,top: 30),
-                        child:
-                        Container(
-                          width: 200,
-                          decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(24)),
-                              color: Colors.pinkAccent),
-                        ),
+          TextButton(
+            onPressed: () async {
+              var pref=await SharedPreferences.getInstance();
+              pref.setBool(login, false);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
 
-                      ),
-                      Column(
-                        children: [
-                          Image.network(beers[index].imageUrl!,height: 200,),
-                          const SizedBox(height: 5,),
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(beers[index].name!,style: const TextStyle(color: Colors.white,fontSize: 12),maxLines: 1,overflow: TextOverflow.ellipsis,),
-                          ),
-                        ],
-                      ),
-                      const Positioned(
-                          bottom: 0,
-                          right: 15,
-                          child: Icon(Icons.add_a_photo)
-                      ),
-
-                    ],
-                  ),
-                );
-              },
-            ),
-          )
+  void showDeleteAccount(BuildContext context) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: const Text('Are you sure you wants to delete account?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () async {
+              var pref=await SharedPreferences.getInstance();
+              pref.remove(login);
+              pref.remove(email);
+              pref.remove(password);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginScreen()));
+            },
+            child: const Text('Yes'),
+          ),
         ],
       ),
     );
   }
 }
-
-
-
-
