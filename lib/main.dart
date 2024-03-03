@@ -14,6 +14,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 
 var page = 1;
 List<BeerDetails> beers = [];
@@ -32,7 +33,8 @@ var countryController = TextEditingController();
 var stateController = TextEditingController();
 var cityController = TextEditingController();
 XFile? image;
-var path='';
+var path = '';
+
 void main() {
   runApp(const MyApp());
 }
@@ -85,55 +87,41 @@ class BottomNavigationBarView extends StatefulWidget {
 }
 
 class _BottomNavigationBarState extends State<BottomNavigationBarView> {
-  int selectedIndex = 0;
-
-  static const List item = [
-    Listing(),
-    Profile(),
-    Settings(),
-  ];
-  final List<String> appBarTitles = ['Home', 'Profile', 'Settings'];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text(
-          appBarTitles[selectedIndex],
-          style: toolBarTitle(),
+    return CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          activeColor: Colors.green,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: 'Settings'),
+          ],
         ),
-        centerTitle: true,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        unselectedItemColor: Colors.grey,
-        currentIndex: selectedIndex,
-        selectedItemColor: Colors.black,
-        elevation: 0.0,
-        onTap: onItemClicked,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
-        ],
-      ),
-      body: item.elementAt(selectedIndex),
-    );
-  }
-
-  void onItemClicked(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
+        tabBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return CupertinoTabView(
+                builder: (context) {
+                  return CupertinoPageScaffold(child: Listing());
+                },
+              );
+            case 1:
+              return CupertinoTabView(
+                builder: (context) {
+                  return CupertinoPageScaffold(child: Profile());
+                },
+              );
+            case 2:
+              return CupertinoTabView(
+                builder: (context) {
+                  return CupertinoPageScaffold(child: Settings());
+                },
+              );
+          }
+          return Container();
+        });
   }
 }
 
@@ -159,35 +147,42 @@ class _ListingState extends State<Listing> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.sizeOf(context).height,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              navigateToScreen(context, index);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: arrayList[index].color,
-                    borderRadius: BorderRadius.all(Radius.circular(50))),
-                height: 100,
-                child: Center(
-                    child: Text(
-                  arrayList[index].name,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
-                )),
-              ),
-            ),
-          );
-        },
-        itemCount: arrayList.length,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.green,
+        title: Text('Home',style: toolBarTitle(),),
       ),
+      body: Container(
+          height: MediaQuery.sizeOf(context).height,
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  navigateToScreen(context, index);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: arrayList[index].color,
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    height: 100,
+                    child: Center(
+                        child: Text(
+                      arrayList[index].name,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    )),
+                  ),
+                ),
+              );
+            },
+            itemCount: arrayList.length,
+          ),
+        ),
     );
   }
 
@@ -254,370 +249,375 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-
     KeyboardVisibilityController().onChange.listen((bool visible) {
       setState(() {
         visible ? opacityOfImage = 0.5 : opacityOfImage = 1.0;
       });
     });
-    return Stack(
-      children: [
-        Positioned(
-          right: -100,
-          top: -150,
-          child: Opacity(
-            opacity: opacityOfImage,
-            child: Transform(
-                transform: Matrix4.rotationZ(0.8),
-                alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/images/leaf.png',
-                  height: 500,
-                  width: 300,
-                  fit: BoxFit.contain,
-                )),
-          ),
-        ),
-        Positioned(
-          right: -60,
-          top: 0,
-          child: Opacity(
-            opacity: opacityOfImage,
-            child: Transform(
-                transform: Matrix4.rotationZ(1.5),
-                alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/images/leaf.png',
-                  height: 500,
-                  width: 100,
-                  fit: BoxFit.contain,
-                )),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: MediaQuery.sizeOf(context).height * 0.8,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30, top: 10, right: 30),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Edit\nProfile",
-                      style: TextStyle(fontSize: 35, color: Colors.green),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    TextField(
-                      controller: nameController,
-                      maxLines: 1,
-                      cursorColor: Colors.green,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: 'Your name',
-                          errorText:
-                              isValidateName ? "Please enter name" : null,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      maxLines: 1,
-                      cursorColor: Colors.green,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: 'Your email',
-                          errorText: emailErrorMsg,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: passwordController,
-                      obscureText: true,
-                      cursorColor: Colors.green,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        errorText:
-                            isValidatePassword ? "Please enter password" : null,
-                        labelStyle: const TextStyle(
-                          color: Colors.grey, //<-- SEE HERE
-                        ),
-                        focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green)),
-                        //suffix: Text("Forgot?",style: TextStyle(color: Colors.green),)
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      cursorColor: Colors.green,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm password',
-                        errorText: isValidateConfirmPassword
-                            ? "Please enter confirm password"
-                            : null,
-                        labelStyle: const TextStyle(
-                          color: Colors.grey, //<-- SEE HERE
-                        ),
-                        focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green)),
-                        //suffix: Text("Forgot?",style: TextStyle(color: Colors.green),)
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: phoneNumberController,
-                      maxLines: 1,
-                      keyboardType: TextInputType.number,
-                      cursorColor: Colors.green,
-                      textInputAction: TextInputAction.next,
-                      maxLength: 10,
-                      decoration: InputDecoration(
-                          labelText: 'Phone Number',
-                          counterText: '',
-                          errorText: errorMsg,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(height: 15),
-                    /*DropdownButton(
-                      hint: const Text('Gender'),
-                        value: selectedGender,
-                        isExpanded: true,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedGender = value!;
-                          });
-
-                        },items: gender.map((gender) {
-                      return DropdownMenuItem(
-                        child: Text(gender),
-                        value: gender,
-                      );
-                    }).toList(),),*/
-                    const SizedBox(height: 15),
-                    TextField(
-                      readOnly: true,
-                      onTap: () {
-                        selectDate(context);
-                      },
-                      controller: dateOfBirtController,
-                      cursorColor: Colors.green,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: 'Date Of Birth',
-                          errorText: isValidateDateOfBirth
-                              ? "Please enter Date of Birth"
-                              : null,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: countryController,
-                      cursorColor: Colors.green,
-                      maxLines: 1,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: 'Country',
-                          errorText:
-                              isValidateCountry ? "Please enter Country" : null,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: stateController,
-                      cursorColor: Colors.green,
-                      maxLines: 1,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: 'State',
-                          errorText:
-                              isValidateState ? "Please enter State" : null,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: cityController,
-                      cursorColor: Colors.green,
-                      maxLines: 1,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: 'City',
-                          errorText:
-                              isValidateCity ? "Please enter City" : null,
-                          labelStyle: const TextStyle(
-                            color: Colors.grey, //<-- SEE HERE
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green))),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: Scaffold(
+        appBar: AppBar(title: Text('Profile',style: toolBarTitle(),),backgroundColor: Colors.green,centerTitle: true,),
+        body: Stack(
+          children: [
+            Positioned(
+              right: -100,
+              top: -150,
+              child: Opacity(
+                opacity: opacityOfImage,
+                child: Transform(
+                    transform: Matrix4.rotationZ(0.8),
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      'assets/images/leaf.png',
+                      height: 500,
+                      width: 300,
+                      fit: BoxFit.contain,
+                    )),
+              ),
+            ),
+            Positioned(
+              right: -60,
+              top: 0,
+              child: Opacity(
+                opacity: opacityOfImage,
+                child: Transform(
+                    transform: Matrix4.rotationZ(1.5),
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      'assets/images/leaf.png',
+                      height: 500,
+                      width: 100,
+                      fit: BoxFit.contain,
+                    )),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: MediaQuery.sizeOf(context).height * 0.8,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 30, top: 10, right: 30),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        roundedElevatedButton(
-                            "Choose Your Profile Picture", Colors.green, () {
-                          imagePicker();
-                        }, 20),
-                        Spacer(),
-                        image != null
-                            ? CircleAvatar(
-                                backgroundImage: FileImage(File(path)),
-                              )
-                            : const Text(''),
+                        const Text(
+                          "Edit\nProfile",
+                          style: TextStyle(fontSize: 35, color: Colors.green),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        TextField(
+                          controller: nameController,
+                          maxLines: 1,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: 'Your name',
+                              errorText:
+                                  isValidateName ? "Please enter name" : null,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          maxLines: 1,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: 'Your email',
+                              errorText: emailErrorMsg,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: passwordController,
+                          obscureText: true,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.done,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            errorText:
+                                isValidatePassword ? "Please enter password" : null,
+                            labelStyle: const TextStyle(
+                              color: Colors.grey, //<-- SEE HERE
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.green)),
+                            //suffix: Text("Forgot?",style: TextStyle(color: Colors.green),)
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: confirmPasswordController,
+                          obscureText: true,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.done,
+                          decoration: InputDecoration(
+                            labelText: 'Confirm password',
+                            errorText: isValidateConfirmPassword
+                                ? "Please enter confirm password"
+                                : null,
+                            labelStyle: const TextStyle(
+                              color: Colors.grey, //<-- SEE HERE
+                            ),
+                            focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.green)),
+                            //suffix: Text("Forgot?",style: TextStyle(color: Colors.green),)
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: phoneNumberController,
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.next,
+                          maxLength: 10,
+                          decoration: InputDecoration(
+                              labelText: 'Phone Number',
+                              counterText: '',
+                              errorText: errorMsg,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(height: 15),
+                        /*DropdownButton(
+                          hint: const Text('Gender'),
+                            value: selectedGender,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedGender = value!;
+                              });
+
+                            },items: gender.map((gender) {
+                          return DropdownMenuItem(
+                            child: Text(gender),
+                            value: gender,
+                          );
+                        }).toList(),),*/
+                        const SizedBox(height: 15),
+                        TextField(
+                          readOnly: true,
+                          onTap: () {
+                            selectDate(context);
+                          },
+                          controller: dateOfBirtController,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: 'Date Of Birth',
+                              errorText: isValidateDateOfBirth
+                                  ? "Please enter Date of Birth"
+                                  : null,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: countryController,
+                          cursorColor: Colors.green,
+                          maxLines: 1,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: 'Country',
+                              errorText:
+                                  isValidateCountry ? "Please enter Country" : null,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: stateController,
+                          cursorColor: Colors.green,
+                          maxLines: 1,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: 'State',
+                              errorText:
+                                  isValidateState ? "Please enter State" : null,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: cityController,
+                          cursorColor: Colors.green,
+                          maxLines: 1,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                              labelText: 'City',
+                              errorText:
+                                  isValidateCity ? "Please enter City" : null,
+                              labelStyle: const TextStyle(
+                                color: Colors.grey, //<-- SEE HERE
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.green))),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            roundedElevatedButton(
+                                "Choose Your Profile Picture", Colors.green, () {
+                              imagePicker();
+                            }, 20),
+                            Spacer(),
+                            image != null
+                                ? CircleAvatar(
+                                    backgroundImage: FileImage(File(path)),
+                                  )
+                                : const Text(''),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                            child: Text(
+                          'Select Your Hobbies',
+                          style: TextStyle(color: Colors.grey),
+                        )),
+                        Wrap(
+                            alignment: WrapAlignment.start,
+                            children: List.generate(5, (index) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Checkbox(
+                                    value: checkboxValues[index],
+                                    activeColor: Colors.green,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        checkboxValues[index] = value!;
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(width: 8),
+                                  // Adjust the space between checkbox and label
+                                  Text(checkboxText[index]),
+                                ],
+                              );
+                            })),
+                        const SizedBox(height: 45),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: SizedBox(
+                              height: 50,
+                              width: MediaQuery.sizeOf(context).width,
+                              child: roundedElevatedButton("Save", Colors.green,
+                                  () async {
+                                setState(() {
+                                  nameController.text.isEmpty
+                                      ? isValidateName = true
+                                      : isValidateName = false;
+                                  validateEmailId();
+                                  passwordController.text.isEmpty
+                                      ? isValidatePassword = true
+                                      : isValidatePassword = false;
+                                  confirmPasswordController.text.isEmpty
+                                      ? isValidateConfirmPassword = true
+                                      : isValidateConfirmPassword = false;
+                                  validatePhoneNumber();
+                                  dateOfBirtController.text.isEmpty
+                                      ? isValidateDateOfBirth = true
+                                      : isValidateDateOfBirth = false;
+                                  countryController.text.isEmpty
+                                      ? isValidateCountry = true
+                                      : isValidateCountry = false;
+                                  stateController.text.isEmpty
+                                      ? isValidateState = true
+                                      : isValidateState = false;
+                                  cityController.text.isEmpty
+                                      ? isValidateCity = true
+                                      : isValidateCity = false;
+                                });
+                                if (nameController.text.isNotEmpty &&
+                                    isValidateEmail &&
+                                    passwordController.text.isNotEmpty &&
+                                    confirmPasswordController.text.isNotEmpty &&
+                                    isValidatePhoneNumber &&
+                                    dateOfBirtController.text.isNotEmpty &&
+                                    countryController.text.isNotEmpty &&
+                                    stateController.text.isNotEmpty &&
+                                    cityController.text.isNotEmpty) {
+                                  if (passwordController.text.toString() ==
+                                      confirmPasswordController.text.toString()) {
+                                    var pref =
+                                        await SharedPreferences.getInstance();
+                                    pref.setString(
+                                        name, nameController.text.toString());
+                                    pref.setString(
+                                        email, emailController.text.toString());
+                                    pref.setString(password,
+                                        passwordController.text.toString());
+                                    pref.setString(confirmPassword,
+                                        confirmPasswordController.text.toString());
+                                    pref.setString(phoneNumber,
+                                        phoneNumberController.text.toString());
+                                    pref.setString(dateOfBirth,
+                                        dateOfBirtController.text.toString());
+                                    pref.setString(
+                                        country, countryController.text.toString());
+                                    pref.setString(
+                                        state, stateController.text.toString());
+                                    pref.setString(
+                                        city, cityController.text.toString());
+                                    pref.setString(profile, image!.path);
+                                    print(emailController.text.toString());
+                                  } else {
+                                    showSnackBar("Password mismatch");
+                                  }
+                                }
+                              }, 30)),
+                        ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                        child: Text(
-                      'Select Your Hobbies',
-                      style: TextStyle(color: Colors.grey),
-                    )),
-                    Wrap(
-                        alignment: WrapAlignment.start,
-                        children: List.generate(5, (index) {
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Checkbox(
-                                value: checkboxValues[index],
-                                activeColor: Colors.green,
-                                onChanged: (value) {
-                                  setState(() {
-                                    checkboxValues[index] = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(width: 8),
-                              // Adjust the space between checkbox and label
-                              Text(checkboxText[index]),
-                            ],
-                          );
-                        })),
-                    const SizedBox(height: 45),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30),
-                      child: SizedBox(
-                          height: 50,
-                          width: MediaQuery.sizeOf(context).width,
-                          child: roundedElevatedButton("Save", Colors.green,
-                              () async {
-                            setState(() {
-                              nameController.text.isEmpty
-                                  ? isValidateName = true
-                                  : isValidateName = false;
-                              validateEmailId();
-                              passwordController.text.isEmpty
-                                  ? isValidatePassword = true
-                                  : isValidatePassword = false;
-                              confirmPasswordController.text.isEmpty
-                                  ? isValidateConfirmPassword = true
-                                  : isValidateConfirmPassword = false;
-                              validatePhoneNumber();
-                              dateOfBirtController.text.isEmpty
-                                  ? isValidateDateOfBirth = true
-                                  : isValidateDateOfBirth = false;
-                              countryController.text.isEmpty
-                                  ? isValidateCountry = true
-                                  : isValidateCountry = false;
-                              stateController.text.isEmpty
-                                  ? isValidateState = true
-                                  : isValidateState = false;
-                              cityController.text.isEmpty
-                                  ? isValidateCity = true
-                                  : isValidateCity = false;
-                            });
-                            if (nameController.text.isNotEmpty &&
-                                isValidateEmail &&
-                                passwordController.text.isNotEmpty &&
-                                confirmPasswordController.text.isNotEmpty &&
-                                isValidatePhoneNumber &&
-                                dateOfBirtController.text.isNotEmpty &&
-                                countryController.text.isNotEmpty &&
-                                stateController.text.isNotEmpty &&
-                                cityController.text.isNotEmpty) {
-                              if (passwordController.text.toString() ==
-                                  confirmPasswordController.text.toString()) {
-                                var pref =
-                                    await SharedPreferences.getInstance();
-                                pref.setString(
-                                    name, nameController.text.toString());
-                                pref.setString(
-                                    email, emailController.text.toString());
-                                pref.setString(password,
-                                    passwordController.text.toString());
-                                pref.setString(confirmPassword,
-                                    confirmPasswordController.text.toString());
-                                pref.setString(phoneNumber,
-                                    phoneNumberController.text.toString());
-                                pref.setString(dateOfBirth,
-                                    dateOfBirtController.text.toString());
-                                pref.setString(
-                                    country, countryController.text.toString());
-                                pref.setString(
-                                    state, stateController.text.toString());
-                                pref.setString(
-                                    city, cityController.text.toString());
-                                pref.setString(profile, image!.path);
-                                print(emailController.text.toString());
-                              } else {
-                                showSnackBar("Password mismatch");
-                              }
-                            }
-                          }, 30)),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            /*Align(
+              alignment: Alignment.bottomLeft,
+              child: Positioned(
+                bottom: 0,
+                left: 0,
+                child: Transform(
+                    transform: Matrix4.rotationZ(3.5),
+                    alignment: Alignment.center,
+                    child: Image.asset('assets/images/leaf.png')),
+              ),
+            ),*/
+          ],
         ),
-        /*Align(
-          alignment: Alignment.bottomLeft,
-          child: Positioned(
-            bottom: 0,
-            left: 0,
-            child: Transform(
-                transform: Matrix4.rotationZ(3.5),
-                alignment: Alignment.center,
-                child: Image.asset('assets/images/leaf.png')),
-          ),
-        ),*/
-      ],
+      ),
     );
   }
 
@@ -658,7 +658,7 @@ class _ProfileState extends State<Profile> {
     } else if (!phoneNumberValidator.hasMatch(phoneNumberController.text)) {
       errorMsg = 'Please enter valid phone number';
     } else {
-      isValidatePhoneNumber=true;
+      isValidatePhoneNumber = true;
       errorMsg = null;
     }
     return errorMsg;
@@ -670,7 +670,7 @@ class _ProfileState extends State<Profile> {
     } else if (EmailValidator.validate(emailController.text) == false) {
       emailErrorMsg = 'Please enter valid email address';
     } else {
-      isValidateEmail=true;
+      isValidateEmail = true;
       emailErrorMsg = null;
     }
     return emailErrorMsg;
@@ -682,32 +682,37 @@ class _ProfileState extends State<Profile> {
         await imagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       image = pickedImage;
-      path=image!.path;
+      path = image!.path;
     });
   }
 }
 
 Future<void> setValue() async {
   var pref = await SharedPreferences.getInstance();
-  nameController.text=pref.getString(name)!;
-  emailController.text=pref.getString(email)!;
-  passwordController.text=pref.getString(password)!;
-  confirmPasswordController.text=pref.getString(confirmPassword)!;
-  phoneNumberController.text=pref.getString(phoneNumber)!;
-  dateOfBirtController.text=pref.getString(dateOfBirth)!;
-  countryController.text=pref.getString(country)!;
-  stateController.text=pref.getString(state)!;
-  cityController.text=pref.getString(city)!;
-  path=pref.getString(profile)!;
+  nameController.text = pref.getString(name)!;
+  emailController.text = pref.getString(email)!;
+  passwordController.text = pref.getString(password)!;
+  confirmPasswordController.text = pref.getString(confirmPassword)!;
+  phoneNumberController.text = pref.getString(phoneNumber)!;
+  dateOfBirtController.text = pref.getString(dateOfBirth)!;
+  countryController.text = pref.getString(country)!;
+  stateController.text = pref.getString(state)!;
+  cityController.text = pref.getString(city)!;
+  path = pref.getString(profile)!;
 }
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
   @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
+      appBar: AppBar(title: Text('Settings',style: toolBarTitle(),),backgroundColor: Colors.green,centerTitle: true,),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

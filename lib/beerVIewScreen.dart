@@ -25,8 +25,8 @@ class _BeerViewScreenState extends State<BeerViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: Colors.pinkAccent,
-        leading: Icon(Icons.arrow_back,color: Colors.white,),
+      backgroundColor: Colors.green,
+        leading: InkWell(child: Icon(Icons.arrow_back,color: Colors.white,),onTap: (){Navigator.pop(context);},),
         title: Text("Bear",style: toolBarTitle(),),
         centerTitle: true,
     ),body: const AllWineDetails(),);
@@ -110,134 +110,137 @@ class _TopBeerDetailsState extends State<TopBeerDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: textFiledSearch,
-              decoration: editText("Search here",15.0,false),
-              onChanged: (value){
-                searchingText=value;
-                search(searchingText);
-              },
-            ),
-            ElevatedButton(onPressed: (){
-              searchingText=textFiledSearch.text.toString();
-              setState(() {
-                search(searchingText);
-              });
-            }, child: const Text("Search")),
-            Container(
-              height: 350,
-              margin: const EdgeInsets.all(12.0),
-              width: MediaQuery.sizeOf(context).width,
-              color: Colors.white,
-              child: ListView.builder(
-                controller: scrollController,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 0, top: 10, bottom: 10),
-                itemCount: beers.length,
-                itemBuilder: (context, index) {
-                  if(index == beers.length){
-                    return isLoading ? const CircularProgressIndicator() : const SizedBox();
-                  }else{
-                    return GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BeerDetailsScreen(beer: beers[index])));
-                      },
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width:200,
-                                  height:70,
-                                  child: Text(
-                                    beers[index].tagline!,
-                                    style: textStyle(
-                                      Colors.black,
-                                      'Anta-Regular',
-                                      22,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 50),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: textFiledSearch,
+                decoration: editText("Search here",15.0,false),
+                onChanged: (value){
+                  searchingText=value;
+                  search(searchingText);
+                },
+              ),
+              ElevatedButton(onPressed: (){
+                searchingText=textFiledSearch.text.toString();
+                setState(() {
+                  search(searchingText);
+                });
+              }, child: const Text("Search")),
+              Container(
+                height: 350,
+                margin: const EdgeInsets.all(12.0),
+                width: MediaQuery.sizeOf(context).width,
+                color: Colors.white,
+                child: ListView.builder(
+                  controller: scrollController,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(left: 0, top: 10, bottom: 10),
+                  itemCount: beers.length,
+                  itemBuilder: (context, index) {
+                    if(index == beers.length){
+                      return isLoading ? const CircularProgressIndicator() : const SizedBox();
+                    }else{
+                      return GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BeerDetailsScreen(beer: beers[index])));
+                        },
+                        child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width:200,
+                                    height:70,
+                                    child: Text(
+                                      beers[index].tagline!,
+                                      style: textStyle(
+                                        Colors.black,
+                                        'Anta-Regular',
+                                        22,
+                                      ),
+                                      textAlign: TextAlign.start,
+                                      maxLines: 2,
                                     ),
-                                    textAlign: TextAlign.start,
-                                    maxLines: 2,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 25,
-                                ),
-                                Card(
-                                  shadowColor: Colors.pinkAccent,
-                                  elevation: 5,
-                                  child: Container(
-                                    height: 193,
-                                    padding: const EdgeInsets.all(25),
-                                    width: MediaQuery.sizeOf(context).width*0.88,
-                                    decoration: BoxDecoration(
-                                      color: Colors.pinkAccent,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 200,
-                                          child: Text(
-                                            beers[index].name!,
+                                  const SizedBox(
+                                    height: 25,
+                                  ),
+                                  Card(
+                                    shadowColor: Colors.pinkAccent,
+                                    elevation: 5,
+                                    child: Container(
+                                      height: 193,
+                                      padding: const EdgeInsets.all(25),
+                                      width: MediaQuery.sizeOf(context).width*0.88,
+                                      decoration: BoxDecoration(
+                                        color: Colors.pinkAccent,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: 200,
+                                            child: Text(
+                                              beers[index].name!,
+                                              style: textStyle(
+                                                Colors.white,
+                                                'Anta-Regular',
+                                                22,
+                                              ),
+                                              textAlign: TextAlign.start,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            'italy, 13.5%',
                                             style: textStyle(
                                               Colors.white,
                                               'Anta-Regular',
                                               22,
                                             ),
                                             textAlign: TextAlign.start,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          'italy, 13.5%',
-                                          style: textStyle(
-                                            Colors.white,
-                                            'Anta-Regular',
-                                            22,
+                                          const SizedBox(
+                                            height: 15,
                                           ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        ElevatedButton(
-                                            onPressed: () {}, child: const Text("975 p")),
-                                      ],
+                                          ElevatedButton(
+                                              onPressed: () {}, child: const Text("975 p")),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ]),
-                          Positioned(
-                              right: 25,
-                              top: 15,
-                              child:
-                              Image.network(beers[index].imageUrl!, height: 200))
-                        ],
-                      ),
-                    );
-                  }
-                },
+                                  )
+                                ]),
+                            Positioned(
+                                right: 25,
+                                top: 15,
+                                child:
+                                Image.network(beers[index].imageUrl!, height: 200))
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-            LastOrder()
-          ],
+              LastOrder()
+            ],
+          ),
         ),
       ),
     );
