@@ -593,7 +593,7 @@ class _ProfileState extends State<Profile> {
                                 pref.setString(
                                     city, cityController.text.toString());
                                 pref.setString(profile, image!.path);
-                                Navigator.pop(context);
+                                print(emailController.text.toString());
                               } else {
                                 showSnackBar("Password mismatch");
                               }
@@ -658,6 +658,7 @@ class _ProfileState extends State<Profile> {
     } else if (!phoneNumberValidator.hasMatch(phoneNumberController.text)) {
       errorMsg = 'Please enter valid phone number';
     } else {
+      isValidatePhoneNumber=true;
       errorMsg = null;
     }
     return errorMsg;
@@ -669,6 +670,7 @@ class _ProfileState extends State<Profile> {
     } else if (EmailValidator.validate(emailController.text) == false) {
       emailErrorMsg = 'Please enter valid email address';
     } else {
+      isValidateEmail=true;
       emailErrorMsg = null;
     }
     return emailErrorMsg;
