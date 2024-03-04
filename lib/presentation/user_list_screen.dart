@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:first_flutter_demo_app/pojo/UserModel.dart';
-import 'package:first_flutter_demo_app/userDetailsScreen.dart';
+import 'package:first_flutter_demo_app/presentation/user_details_screen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../common_widget/appbar.dart';
 
 
 class UserListScreen extends StatelessWidget{
@@ -12,14 +14,7 @@ class UserListScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        leading: InkWell(
-            onTap: (){Navigator.pop(context);},
-            child: const Icon(Icons.arrow_back,color: Colors.white,)),
-        title: Text("User List",style: toolBarTitle(),),
-        centerTitle: true,
-      ),body: const UserList(),);
+        appBar:appBar(title: "User List", context: context),body: const UserList(),);
   }
 }
 
@@ -76,7 +71,7 @@ class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
+
       child: Column(
         children: [
           Padding(
@@ -87,7 +82,7 @@ class _UserListState extends State<UserList> {
                 setState(() {
                   searchedList = userList
                       .where(
-                        (user) => (user.title!.toLowerCase().contains(
+                        (user) => ((user.title??"").toLowerCase().contains(
                       value.toLowerCase(),
                     )),
                   ).toList();

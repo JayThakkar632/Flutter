@@ -1,10 +1,10 @@
-import 'package:first_flutter_demo_app/signInScreen.dart';
+import 'package:first_flutter_demo_app/presentation/old_program/signInScreen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
+import '../main.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

@@ -1,5 +1,5 @@
-import 'package:first_flutter_demo_app/signInScreen.dart';
-import 'package:first_flutter_demo_app/signUpScreen.dart';
+import 'package:first_flutter_demo_app/presentation/old_program/signInScreen.dart';
+import 'package:first_flutter_demo_app/presentation/old_program/signUpScreen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 

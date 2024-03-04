@@ -1,14 +1,9 @@
 
 import 'package:flutter/material.dart';
 
-TextStyle toolBarTitle() {
+TextStyle textStyle(Color color, String fontFamily, double fontSize,FontWeight fontWeight) {
   return TextStyle(
-      color: Colors.white, fontFamily: 'Anta-Regular', fontSize: 22);
-}
-
-TextStyle textStyle(Color color, String fontFamily, double fontSize) {
-  return TextStyle(
-      color: color, fontFamily: fontFamily, fontSize: fontSize);
+      color: color, fontFamily: fontFamily, fontSize: fontSize,fontWeight: fontWeight);
 }
 
 TextStyle styleForButton(Color? textColor) {
@@ -29,7 +24,8 @@ InputDecoration editText(String hintText,double radius,bool isValidate){
           borderRadius: BorderRadius.circular(radius)));
 }
 
-ElevatedButton roundedElevatedButton(String? text, Color? bgColor,VoidCallback onPressedCallback, double radius) {
+ElevatedButton roundedElevatedButton(String? text, Color? bgColor,VoidCallback onPressedCallback, double radius,
+    {double heright = 50}) {
   return ElevatedButton(
     onPressed: () {
       onPressedCallback();

@@ -1,4 +1,5 @@
 import 'package:first_flutter_demo_app/pojo/BeerDetails.dart';
+import 'package:first_flutter_demo_app/common_widget/appbar.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,49 +11,28 @@ class BeerDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.pinkAccent,
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 40),
+      child: Scaffold(
         backgroundColor: Colors.pinkAccent,
-        leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(
-              Icons.arrow_back_outlined,
-              color: Colors.white,
-            )),
-        title: Text(
-          beer.tagline!,
-          style: toolBarTitle(),
+        resizeToAvoidBottomInset: false,
+        appBar:appBar(title: "Beer Details", context: context),
+        body: Stack(
+          children: [
+            buildTopView(),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: buildBottomView(context)),
+            Positioned(
+                right: 0,
+                top: 130,
+                child: Image.network(
+                  beer.imageUrl!,
+                  height: 200,
+                  width: 150,
+                )),
+          ],
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const FaIcon(
-              FontAwesomeIcons.phone,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          buildTopView(),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: buildBottomView(context)),
-          Positioned(
-              right: 0,
-              top: 130,
-              child: Image.network(
-                beer.imageUrl!,
-                height: 200,
-                width: 150,
-              )),
-        ],
       ),
     );
   }
@@ -69,7 +49,7 @@ class BeerDetailsScreen extends StatelessWidget {
             style: textStyle(
               Colors.white,
               'Anta-Regular',
-              22,
+              22,FontWeight.normal
             ),
           ),
         ),

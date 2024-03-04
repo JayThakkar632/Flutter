@@ -1,5 +1,5 @@
-import 'package:first_flutter_demo_app/tabBarFirstScreen.dart';
-import 'package:first_flutter_demo_app/tabBarSecondScreen.dart';
+import 'package:first_flutter_demo_app/presentation/old_program/tabBarFirstScreen.dart';
+import 'package:first_flutter_demo_app/presentation/old_program/tabBarSecondScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
