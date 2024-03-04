@@ -36,7 +36,7 @@ class _ListingState extends State<Listing> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:appBar(title: "Programme Listing", context: context),
+      appBar:null,
       body: Container(
         height: MediaQuery.sizeOf(context).height,
         child: ListView.builder(

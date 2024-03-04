@@ -1,4 +1,6 @@
-import 'package:first_flutter_demo_app/presentation/sIgnUpScreenOne.dart';
+import 'dart:convert';
+
+import 'package:first_flutter_demo_app/presentation/signup_screen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -9,6 +11,9 @@ import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
+import '../Model/shared_preferences.dart';
+import '../common_widget/snack_bar.dart';
+import '../constant/const_key.dart';
 import 'main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -45,6 +50,7 @@ class _LoginState extends State<Login> {
   bool isValidateEmail = true;
   bool isValidatePassword = false;
   var opacityOfImage=1.0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -166,9 +172,18 @@ class _LoginState extends State<Login> {
                       width: MediaQuery.sizeOf(context).width,
                       child: roundedElevatedButton("Sign in", Colors.green,
                           () async {
-                        var pref = await SharedPreferences.getInstance();
-                        var getEmail = pref.getString(email);
-                        var getPassword = pref.getString(password);
+                            final prefs = await SharedPreferences.getInstance();
+                            final sharedPrefData = prefs.getString(Constants.USER_MODEL);
+                            var getEmail='';
+                            var getPassword='';
+                            var pref = await SharedPreferences.getInstance();
+                            if(sharedPrefData!=null){
+                              final Map<String, dynamic> data = jsonDecode(sharedPrefData);
+                              var sharedPreferencesModel =  SharedPreferencesModel.fromJson(data);
+                              getEmail =sharedPreferencesModel.email!;
+                              getPassword = sharedPreferencesModel.password!;
+                            }
+
                         setState(() {
                           isValidateEmail =
                               EmailValidator.validate(emailController.text);
@@ -183,13 +198,13 @@ class _LoginState extends State<Login> {
                           if (emailController.text.toString() == getEmail &&
                               passwordController.text.toString() ==
                                   getPassword) {
-                            pref.setBool(login, true);
+                            pref.setBool(Constants.IS_LOGIN, true);
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => MyHomePage()));
                           } else {
-                            showSnackBar("Invalid credentials");
+                            showSnackBar("Invalid credentials",context);
                           }
                         }
                       }, 30)),
@@ -247,18 +262,5 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void showSnackBar(String msg) {
-    var snackBar = SnackBar(
-        content: Text(msg),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+
 }

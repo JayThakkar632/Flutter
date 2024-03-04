@@ -1,17 +1,29 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:first_flutter_demo_app/Model/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../common_widget/round_elevated_button.dart';
+import '../../common_widget/snack_bar.dart';
+import '../../constant/const_key.dart';
 
-
-class SignUpProfileScreen extends StatefulWidget{
-  const SignUpProfileScreen({super.key});
+class SignUpProfileScreen extends StatefulWidget {
+   var title='';
+   SignUpProfileScreen(this.title, {super.key});
 
   @override
   State<SignUpProfileScreen> createState() => _SignUpProfileScreenState();
 }
 
 class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
-  var _imageOpacity = 1.0;
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
@@ -21,11 +33,35 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
   var countryController = TextEditingController();
   var stateController = TextEditingController();
   var cityController = TextEditingController();
+  bool isValidatePhoneNumber = true;
+  bool isValidateEmail = true;
+  var opacityOfImage = 1.0;
+  var errorMsg = null;
+  var emailErrorMsg = null;
+  var path='';
+  final phoneNumberValidator = RegExp(r'^[0-9]{10}$');
+  DateTime? selectedDate;
+  XFile? image;
+  Map<String, bool> hobby = {
+    'Reading': false,
+    'Cooking': false,
+    'Playing': false,
+    'Travelling': false,
+    'Gaming': false
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    getDataFromPrefs();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.title);
     KeyboardVisibilityController().onChange.listen((bool visible) {
       setState(() {
-        visible ? _imageOpacity = 0.5 : _imageOpacity = 1.0;
+        visible ? opacityOfImage = 0.5 : opacityOfImage = 1.0;
       });
     });
     return Stack(
@@ -34,7 +70,7 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
           right: -100,
           top: -150,
           child: Opacity(
-            opacity: _imageOpacity,
+            opacity: opacityOfImage,
             child: Transform(
                 transform: Matrix4.rotationZ(0.8),
                 alignment: Alignment.center,
@@ -50,7 +86,7 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
           right: -60,
           top: 0,
           child: Opacity(
-            opacity: _imageOpacity,
+            opacity: opacityOfImage,
             child: Transform(
                 transform: Matrix4.rotationZ(1.5),
                 alignment: Alignment.center,
@@ -88,8 +124,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                         labelText: 'Your name',
-                        errorText:
-                        isValidateName ? "Please enter name" : null,
+                        errorText: nameController.text.isEmpty
+                            ? 'Please enter name'
+                            : null,
                         labelStyle: const TextStyle(
                           color: Colors.grey, //<-- SEE HERE
                         ),
@@ -100,7 +137,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                   TextField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\s'))
+                    ],
                     maxLines: 1,
                     cursorColor: Colors.green,
                     textInputAction: TextInputAction.next,
@@ -121,8 +160,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      errorText:
-                      isValidatePassword ? "Please enter password" : null,
+                      errorText: passwordController.text.isEmpty
+                          ? 'Please enter password'
+                          : null,
                       labelStyle: const TextStyle(
                         color: Colors.grey, //<-- SEE HERE
                       ),
@@ -139,8 +179,8 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       labelText: 'Confirm password',
-                      errorText: isValidateConfirmPassword
-                          ? "Please enter confirm password"
+                      errorText: passwordController.text.isEmpty
+                          ? 'Please enter confirm password'
                           : null,
                       labelStyle: const TextStyle(
                         color: Colors.grey, //<-- SEE HERE
@@ -154,7 +194,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                   TextField(
                     controller: phoneNumberController,
                     maxLines: 1,
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\.'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\.'))
+                    ],
                     keyboardType: TextInputType.number,
                     cursorColor: Colors.green,
                     textInputAction: TextInputAction.next,
@@ -196,8 +238,8 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                         labelText: 'Date Of Birth',
-                        errorText: isValidateDateOfBirth
-                            ? "Please enter Date of Birth"
+                        errorText: dateOfBirtController.text.isEmpty
+                            ? 'Please enter Date of Birth'
                             : null,
                         labelStyle: const TextStyle(
                           color: Colors.grey, //<-- SEE HERE
@@ -213,8 +255,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                         labelText: 'Country',
-                        errorText:
-                        isValidateCountry ? "Please enter Country" : null,
+                        errorText: countryController.text.isEmpty
+                            ? 'Please enter Country'
+                            : null,
                         labelStyle: const TextStyle(
                           color: Colors.grey, //<-- SEE HERE
                         ),
@@ -229,8 +272,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                         labelText: 'State',
-                        errorText:
-                        isValidateState ? "Please enter State" : null,
+                        errorText: stateController.text.isEmpty
+                            ? 'Please enter State'
+                            : null,
                         labelStyle: const TextStyle(
                           color: Colors.grey, //<-- SEE HERE
                         ),
@@ -245,8 +289,9 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                         labelText: 'City',
-                        errorText:
-                        isValidateCity ? "Please enter City" : null,
+                        errorText: cityController.text.isEmpty
+                            ? 'Please enter City'
+                            : null,
                         labelStyle: const TextStyle(
                           color: Colors.grey, //<-- SEE HERE
                         ),
@@ -265,8 +310,8 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                       Spacer(),
                       image != null
                           ? CircleAvatar(
-                        backgroundImage: FileImage(File(image!.path)),
-                      )
+                              backgroundImage: FileImage(File(image!.path)),
+                            )
                           : const Text(''),
                     ],
                   ),
@@ -275,61 +320,40 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                   ),
                   const Center(
                       child: Text(
-                        'Select Your Hobbies',
-                        style: TextStyle(color: Colors.grey),
-                      )),
+                    'Select Your Hobbies',
+                    style: TextStyle(color: Colors.grey),
+                  )),
                   Wrap(
-                      alignment: WrapAlignment.start,
-                      children: List.generate(5, (index) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Checkbox(
-                              value: checkboxValues[index],
-                              activeColor: Colors.green,
-                              onChanged: (value) {
-                                setState(() {
-                                  checkboxValues[index] = value!;
-                                });
-                              },
-                            ),
-                            SizedBox(width: 8),
-                            Text(checkboxText[index]),
-                          ],
-                        );
-                      })),
+                    alignment: WrapAlignment.start,
+                    children: List.generate(hobby.length, (index) {
+                      final key = hobby.keys.elementAt(index);
+                      final value = hobby[key] ?? false; // Use false as default if key not found
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: value,
+                            activeColor: Colors.green,
+                            onChanged: (newValue) {
+                              setState(() {
+                                hobby[key] = newValue ?? false;
+                              });
+                            },
+                          ),
+                          SizedBox(width: 8),
+                          Text(key),
+                        ],
+                      );
+                    }),
+                  )
+                  ,
                   const SizedBox(height: 45),
                   SizedBox(
                       height: 50,
                       width: MediaQuery.sizeOf(context).width,
-                      child: roundedElevatedButton("Sign Up", Colors.green,
-                              () async {
-                            setState(() {
-                              nameController.text.isEmpty
-                                  ? isValidateName = true
-                                  : isValidateName = false;
-                              validateEmailId();
-                              passwordController.text.isEmpty
-                                  ? isValidatePassword = true
-                                  : isValidatePassword = false;
-                              confirmPasswordController.text.isEmpty
-                                  ? isValidateConfirmPassword = true
-                                  : isValidateConfirmPassword = false;
-                              validatePhoneNumber();
-                              dateOfBirtController.text.isEmpty
-                                  ? isValidateDateOfBirth = true
-                                  : isValidateDateOfBirth = false;
-                              countryController.text.isEmpty
-                                  ? isValidateCountry = true
-                                  : isValidateCountry = false;
-                              stateController.text.isEmpty
-                                  ? isValidateState = true
-                                  : isValidateState = false;
-                              cityController.text.isEmpty
-                                  ? isValidateCity = true
-                                  : isValidateCity = false;
-                            });
-                            if (nameController.text.isNotEmpty &&
+                      child: roundedElevatedButton(
+                          "Sign Up", Colors.green, () async {
+                            if(nameController.text.isNotEmpty &&
                                 isValidateEmail &&
                                 passwordController.text.isNotEmpty &&
                                 confirmPasswordController.text.isNotEmpty &&
@@ -337,39 +361,21 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                                 dateOfBirtController.text.isNotEmpty &&
                                 countryController.text.isNotEmpty &&
                                 stateController.text.isNotEmpty &&
-                                cityController.text.isNotEmpty) {
+                                cityController.text.isNotEmpty){
                               if (passwordController.text.toString() ==
                                   confirmPasswordController.text.toString()) {
-                                var pref = await SharedPreferences.getInstance();
-                                pref.setString(
-                                    name, nameController.text.toString());
-                                pref.setString(
-                                    email, emailController.text.toString());
-                                pref.setString(
-                                    password, passwordController.text.toString());
-                                pref.setString(confirmPassword,
-                                    confirmPasswordController.text.toString());
-                                pref.setString(phoneNumber,
-                                    phoneNumberController.text.toString());
-                                pref.setString(dateOfBirth,
-                                    dateOfBirtController.text.toString());
-                                pref.setString(
-                                    country, countryController.text.toString());
-                                pref.setString(
-                                    state, stateController.text.toString());
-                                pref.setString(
-                                    city, cityController.text.toString());
-                                pref.setString(profile, image!.path);
-                                pref.setStringList(hobbies, checkboxValues.map((value) => value.toString()).toList());
-                                showSnackBar("SignUp Successfully");
+                                var prefs = await SharedPreferences.getInstance();
+                                var sharedPreferences= SharedPreferencesModel(name: nameController.text,email:emailController.text,password: passwordController.text,confirmPassword: confirmPasswordController.text,phoneNumber: phoneNumberController.text,dob: dateOfBirtController.text,country: countryController.text,state: stateController.text,city: cityController.text,profile: path);
+                                 await prefs.setString(Constants.USER_MODEL, jsonEncode(sharedPreferences.toJson()));
+                                showSnackBar("SignUp Successfully",context);
                                 Timer(const Duration(seconds: 5),(){
                                   Navigator.pop(context);
                                 });
                               } else {
-                                showSnackBar("Password mismatch");
+                                showSnackBar("Password mismatch",context);
                               }
                             }
-                          }, 30)),
+                      }, 30)),
 
                   //DOB country state city, hobbies
                   const SizedBox(
@@ -382,19 +388,19 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
                           text: TextSpan(
                               text: "Back to",
                               style:
-                              TextStyle(color: Colors.grey, fontSize: 14),
+                                  const TextStyle(color: Colors.grey, fontSize: 14),
                               children: <TextSpan>[
-                                TextSpan(
-                                    text: ' Sign in',
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.pop(context);
-                                      })
-                              ])),
+                            TextSpan(
+                                text: ' Sign in',
+                                style: const TextStyle(
+                                    color: Colors.green,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pop(context);
+                                  })
+                          ])),
                     ),
                   ),
                 ],
@@ -402,18 +408,78 @@ class _SignUpProfileScreenState extends State<SignUpProfileScreen> {
             ),
           ),
         ),
-        /*Align(
-          alignment: Alignment.bottomLeft,
-          child: Positioned(
-            bottom: 0,
-            left: 0,
-            child: Transform(
-                transform: Matrix4.rotationZ(3.5),
-                alignment: Alignment.center,
-                child: Image.asset('assets/images/leaf.png')),
-          ),
-        ),*/
       ],
     );
   }
+
+  Future<void> selectDate(BuildContext context) async {
+    DateTime? datePicker = await showDatePicker(
+        context: context,
+        firstDate: DateTime(2024),
+        lastDate: DateTime(2050),
+        initialDate: DateTime.now());
+    if (datePicker != null) {
+      setState(() {
+        selectedDate = datePicker;
+        dateOfBirtController.text = (selectedDate == null)
+            ? ''
+            : DateFormat('dd/MM/yyyy').format(selectedDate!);
+      });
+    }
+  }
+
+  String? validatePhoneNumber() {
+    if (phoneNumberController.text.isEmpty) {
+      errorMsg = 'Please enter phone number';
+    } else if (!phoneNumberValidator.hasMatch(phoneNumberController.text)) {
+      errorMsg = 'Please enter valid phone number';
+    } else {
+      isValidateEmail = true;
+      errorMsg = null;
+    }
+    return errorMsg;
+  }
+
+  String? validateEmailId() {
+    if (emailController.text.isEmpty) {
+      emailErrorMsg = 'Please enter email';
+    } else if (EmailValidator.validate(emailController.text) == false) {
+      emailErrorMsg = 'Please enter valid email address';
+    } else {
+      isValidatePhoneNumber = true;
+      emailErrorMsg = null;
+    }
+    return emailErrorMsg;
+  }
+
+  Future<void> imagePicker() async {
+    final imagePicker = ImagePicker();
+    final pickedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = pickedImage;
+    });
+  }
+
+  Future<SharedPreferencesModel?> getDataFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final sharedPrefData = prefs.getString(Constants.USER_MODEL);
+    if (sharedPrefData != null) {
+      final Map<String, dynamic> data = jsonDecode(sharedPrefData);
+      var sharedPreferencesModel =  SharedPreferencesModel.fromJson(data);
+      nameController.text = sharedPreferencesModel.name!;
+      emailController.text = sharedPreferencesModel.email!;
+      passwordController.text = sharedPreferencesModel.password!;
+      confirmPasswordController.text = sharedPreferencesModel.confirmPassword!;
+      phoneNumberController.text = sharedPreferencesModel.phoneNumber!;
+      dateOfBirtController.text = sharedPreferencesModel.dob!;
+      countryController.text = sharedPreferencesModel.country!;
+      stateController.text = sharedPreferencesModel.state!;
+      cityController.text = sharedPreferencesModel.city!;
+      path = sharedPreferencesModel.profile??"";
+    }
+  }
 }
+
+
+

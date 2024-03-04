@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common_widget/snack_bar.dart';
 import '../main.dart';
 
 
@@ -27,7 +28,7 @@ class SignInState extends State<SignInScreen> {
     );
 
     if (response.statusCode == 200) {
-      showSnackBar('Login successful');
+      showSnackBar('Login successful',context);
       var pref=await SharedPreferences.getInstance();
       pref.setBool("isLogin", true);
       Navigator.pushReplacement(
@@ -35,7 +36,7 @@ class SignInState extends State<SignInScreen> {
           MaterialPageRoute(
               builder: (context) => MyHomePage()));
     } else {
-      showSnackBar('Please provide valid credentials');
+      showSnackBar('Please provide valid credentials',context);
     }
   }
 
@@ -142,21 +143,5 @@ class SignInState extends State<SignInScreen> {
         ),
       ),
     );
-  }
-  void showSnackBar(String msg){
-    var snackBar= SnackBar(
-        content: Text(msg),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: (){
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        )
-
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

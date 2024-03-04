@@ -1,12 +1,11 @@
-import 'package:first_flutter_demo_app/pojo/UserModel.dart';
-import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 
+import '../Model/user_details.dart';
 import '../common_widget/appbar.dart';
 
 class UserDetailsScreen extends StatelessWidget{
-  final UserModel userModel;
-  const UserDetailsScreen({super.key, required this.userModel});
+  final UserDetails userDetails;
+  const UserDetailsScreen({super.key, required this.userDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +16,11 @@ class UserDetailsScreen extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Id:${userModel.id.toString()}"),
+            Text("Id:${userDetails.id.toString()}"),
             const SizedBox(height: 15,),
-            Text("Title:${userModel.title.toString()}"),
+            Text("Title:${userDetails.title.toString()}"),
             const SizedBox(height: 15,),
-            Text("Description:${userModel.body.toString()}"),
+            Text("Description:${userDetails.body.toString()}"),
           ],
         ),
       ));

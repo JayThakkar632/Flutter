@@ -3,8 +3,8 @@
 /// title : "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
 /// body : "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
 
-class UserModel {
-  UserModel({
+class UserDetails {
+  UserDetails({
       num? userId, 
       num? id, 
       String? title, 
@@ -15,7 +15,7 @@ class UserModel {
     _body = body;
 }
 
-  UserModel.fromJson(dynamic json) {
+  UserDetails.fromJson(dynamic json) {
     _userId = json['userId'];
     _id = json['id'];
     _title = json['title'];
@@ -25,11 +25,11 @@ class UserModel {
   num? _id;
   String? _title;
   String? _body;
-UserModel copyWith({  num? userId,
+UserDetails copyWith({  num? userId,
   num? id,
   String? title,
   String? body,
-}) => UserModel(  userId: userId ?? _userId,
+}) => UserDetails(  userId: userId ?? _userId,
   id: id ?? _id,
   title: title ?? _title,
   body: body ?? _body,

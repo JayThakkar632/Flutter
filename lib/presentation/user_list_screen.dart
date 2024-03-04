@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:first_flutter_demo_app/pojo/UserModel.dart';
+import 'package:first_flutter_demo_app/Model/user_details.dart';
 import 'package:first_flutter_demo_app/presentation/user_details_screen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import '../common_widget/appbar.dart';
+import '../common_widget/snack_bar.dart';
 
 
 class UserListScreen extends StatelessWidget{
@@ -26,8 +26,8 @@ class UserList extends StatefulWidget{
 }
 
 class _UserListState extends State<UserList> {
-  List<UserModel> userList = [];
-  List<UserModel> searchedList = [];
+  List<UserDetails> userList = [];
+  List<UserDetails> searchedList = [];
   var searchText="";
 
   @override
@@ -42,31 +42,15 @@ class _UserListState extends State<UserList> {
     if (response.statusCode == 200) {
       setState(() {
         List<dynamic> decodedData = json.decode(response.body);
-        List<UserModel> parsedBeers = List<UserModel>.from(decodedData.map((data) => UserModel.fromJson(data)));
+        List<UserDetails> parsedBeers = List<UserDetails>.from(decodedData.map((data) => UserDetails.fromJson(data)));
         userList.addAll(parsedBeers);
         searchedList.addAll(userList);
       });
     } else {
-      showSnackBar("Invalid");
+      showSnackBar("Invalid",context);
     }
   }
 
-  void showSnackBar(String msg){
-    var snackBar= SnackBar(
-        content: Text(msg),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: (){
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        )
-
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +81,7 @@ class _UserListState extends State<UserList> {
             child: ListView.separated(itemBuilder: (context,index){
               return GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>UserDetailsScreen(userModel:searchedList[index])));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>UserDetailsScreen(userDetails:searchedList[index])));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

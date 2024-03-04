@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'dart:convert';
-import 'package:first_flutter_demo_app/pojo/BeerDetails.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../Model/beer_details.dart';
 import '../common_widget/appbar.dart';
+import '../common_widget/snack_bar.dart';
 import 'beer_details_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -89,11 +90,11 @@ class _TopBeerDetailsState extends State<TopBeerDetails> {
         beers.addAll(parsedBeers);
         isLoading = false;
         if (beers.isEmpty) {
-          showSnackBar("no data found");
+          showSnackBar("no data found",context as BuildContext);
         }
       });
     } else {
-      showSnackBar("Invalid");
+      showSnackBar("Invalid",context as BuildContext);
     }
   }
 
@@ -248,21 +249,6 @@ class _TopBeerDetailsState extends State<TopBeerDetails> {
         ),
       ),
     );
-  }
-
-  void showSnackBar(String msg) {
-    var snackBar = SnackBar(
-        content: Text(msg),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
