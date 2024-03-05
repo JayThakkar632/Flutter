@@ -1,8 +1,8 @@
-import 'package:first_flutter_demo_app/constant/const_key.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../common_widget/round_elevated_button.dart';
-import 'login_screen.dart';
+import '../../common_widget/round_elevated_button.dart';
+import '../../shared_preferences/shared_prefs_key.dart';
+import '../login/login_screen.dart';
 
 class SettingsScreen extends StatelessWidget{
   const SettingsScreen({super.key});
@@ -14,15 +14,11 @@ class SettingsScreen extends StatelessWidget{
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          roundedElevatedButton("Logout", Colors.green, () {
-            showAlertDialog(context,'logout');
-          }, 20),
+          RoundedElevatedButton(title: "Logout",voidCallback: (){showAlertDialog(context,'logout');},),
           const SizedBox(
             height: 20,
           ),
-          roundedElevatedButton("Delete Account", Colors.green, () {
-            showAlertDialog(context,'delete');
-          }, 20),
+          RoundedElevatedButton(title: "Delete Account",voidCallback: (){showAlertDialog(context,'delete');},)
         ],
       ),
     );
@@ -45,11 +41,11 @@ void showAlertDialog(BuildContext context, String dialog) {
               onPressed: () async {
                 var pref = await SharedPreferences.getInstance();
                 if(dialog  == 'logout'){
-                  pref.setBool(Constants.IS_LOGIN, false);
+                  pref.setBool(SharedPreferencesKey.isLogin, false);
                 }else{
-                  pref.remove(Constants.IS_LOGIN);
-                  pref.remove(Constants.EMAIL);
-                  pref.remove(Constants.PASSWORD);
+                  pref.remove(SharedPreferencesKey.isLogin);
+                  pref.remove(SharedPreferencesKey.email);
+                  pref.remove(SharedPreferencesKey.password);
                 }
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(

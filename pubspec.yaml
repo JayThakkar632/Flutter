@@ -39,7 +39,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  #shared_prefrences
+  #shared_preferences
   shared_preferences: ^2.2.2
   #http:
   http: ^1.2.0
@@ -53,6 +53,8 @@ dev_dependencies:
   intl: ^0.19.0
   #image_picker:
   image_picker: ^1.0.7
+  #cached_network_image:
+  cached_network_image: ^3.3.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

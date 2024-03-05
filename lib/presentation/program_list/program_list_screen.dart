@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../common_widget/appbar.dart';
-import '../beer_screen.dart';
-import '../user_list_screen.dart';
+import '../beer_module/beer_list_screen.dart';
+import '../user_module/user_list_screen.dart';
 
 class ProgramListScreen extends StatelessWidget {
   const ProgramListScreen({super.key});
@@ -76,7 +76,7 @@ class _ListingState extends State<Listing> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const BeerViewScreen(),
+            builder: (context) => const BeerListScreen(),
           ),
         );
         break;

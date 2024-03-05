@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Model/beer_details.dart';
-import 'botton_navigation.dart';
-import 'splash_screen.dart';
+import 'bottom_navigation_bar/botton_navigation.dart';
+import 'splash/splash_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../Model/user_details.dart';
-import '../common_widget/appbar.dart';
+import '../../Model/user_details.dart';
+import '../../common_widget/appbar.dart';
 
 class UserDetailsScreen extends StatelessWidget{
   final UserDetails userDetails;

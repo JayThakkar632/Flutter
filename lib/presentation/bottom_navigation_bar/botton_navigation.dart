@@ -1,8 +1,7 @@
 import 'package:first_flutter_demo_app/common_widget/appbar.dart';
 import 'package:first_flutter_demo_app/presentation/program_list/program_list_screen.dart';
-import 'package:first_flutter_demo_app/presentation/settings_screen.dart';
-import 'package:first_flutter_demo_app/presentation/user_profile_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:first_flutter_demo_app/presentation/settings/settings_screen.dart';
+import 'package:first_flutter_demo_app/presentation/user_profile/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigationBarView extends StatefulWidget {
@@ -56,38 +55,5 @@ class _BottomNavigationBarState extends State<BottomNavigationBarView> {
         ),
         body: _pages[_selectedIndex],
       );
-    /*return CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          activeColor: Colors.green,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings'),
-          ],
-        ),
-        tabBuilder: (context, index) {
-          switch (index) {
-            case 0:
-              return CupertinoTabView(
-                builder: (context) {
-                  return ProgramListScreen();
-                },
-              );
-            case 1:
-              return CupertinoTabView(
-                builder: (context) {
-                  return CupertinoPageScaffold(child: Profile());
-                },
-              );
-            case 2:
-              return CupertinoTabView(
-                builder: (context) {
-                  return CupertinoPageScaffold(child: Settings());
-                },
-              );
-          }
-          return Container();
-        });*/
   }
 }

@@ -1,20 +1,18 @@
 import 'dart:convert';
 
-import 'package:first_flutter_demo_app/presentation/signup_screen.dart';
+import 'package:first_flutter_demo_app/presentation/signup/signup_screen.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-
-import '../Model/shared_preferences.dart';
-import '../common_widget/snack_bar.dart';
-import '../constant/const_key.dart';
-import 'main.dart';
+import '../../Model/shared_preferences.dart';
+import '../../common_widget/snack_bar.dart';
+import '../../shared_preferences/shared_prefs_key.dart';
+import '../main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -45,18 +43,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  bool isValidateEmail = true;
-  bool isValidatePassword = false;
-  var opacityOfImage=1.0;
-
-
+  var _emailController = TextEditingController();
+  var _passwordController = TextEditingController();
+  var _opacityOfImage=1.0;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     KeyboardVisibilityController().onChange.listen((bool visible) {
       setState(() {
-        visible ? opacityOfImage=0.5 : opacityOfImage=1.0;
+        visible ? _opacityOfImage=0.5 : _opacityOfImage=1.0;
       });
     });
     return Stack(
@@ -65,7 +60,7 @@ class _LoginState extends State<Login> {
           right: -100,
           top: -150,
           child: Opacity(
-            opacity: opacityOfImage,
+            opacity: _opacityOfImage,
             child: Transform(
                 transform: Matrix4.rotationZ(0.8),
                 alignment: Alignment.center,
@@ -81,7 +76,7 @@ class _LoginState extends State<Login> {
           right: -60,
           top: 0,
           child: Opacity(
-            opacity: opacityOfImage,
+            opacity: _opacityOfImage,
             child: Transform(
                 transform: Matrix4.rotationZ(1.5),
                 alignment: Alignment.center,
@@ -125,45 +120,42 @@ class _LoginState extends State<Login> {
                   const SizedBox(
                     height: 30,
                   ),
-                  TextField(
-                    controller: emailController,
-                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
-                    keyboardType: TextInputType.emailAddress,
-                    maxLines: 1,
-                    cursorColor: Colors.green,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                        labelText: 'Email',
-                        errorText:
-                            !isValidateEmail ? "Please enter email" : null,
-                        labelStyle: const TextStyle(
-                          color: Colors.grey, //<-- SEE HERE
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(labelText: 'Email',labelStyle: TextStyle(color: Colors.grey)),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(RegExp(r'\s'))
+                          ],
+                          maxLines: 1,
+                          cursorColor: Colors.green,
+                          textInputAction: TextInputAction.next,
+                          validator: (value){
+                            if(value!.isEmpty){
+                              return 'Please enter email';
+                            }else if(!RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value)){
+                              return 'Please enter valid email';
+                            }
+                          },
                         ),
-                        focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green))),
-                  ),
-                  const SizedBox(height: 15),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    cursorColor: Colors.green,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      labelText: 'Password',
-                      errorText:
-                          isValidatePassword ? "Please enter password" : null,
-                      labelStyle: const TextStyle(
-                        color: Colors.grey, //<-- SEE HERE
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green)),
-                      suffix: GestureDetector(
-                        onTap: () {},
-                        child: Text("Forgot?",
-                            style: TextStyle(color: Colors.green)),
-                      ),
-                      //suffix: Text("Forgot?",style: TextStyle(color: Colors.green),)
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          cursorColor: Colors.green,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          decoration: const InputDecoration(labelText: 'Password',labelStyle: TextStyle(color: Colors.grey)),
+                          textInputAction: TextInputAction.next,
+                          validator: (value){
+                            return value!.isEmpty ?'Please enter password':null;
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 45),
@@ -172,41 +164,30 @@ class _LoginState extends State<Login> {
                       width: MediaQuery.sizeOf(context).width,
                       child: roundedElevatedButton("Sign in", Colors.green,
                           () async {
-                            final prefs = await SharedPreferences.getInstance();
-                            final sharedPrefData = prefs.getString(Constants.USER_MODEL);
-                            var getEmail='';
-                            var getPassword='';
-                            var pref = await SharedPreferences.getInstance();
-                            if(sharedPrefData!=null){
-                              final Map<String, dynamic> data = jsonDecode(sharedPrefData);
-                              var sharedPreferencesModel =  SharedPreferencesModel.fromJson(data);
-                              getEmail =sharedPreferencesModel.email!;
-                              getPassword = sharedPreferencesModel.password!;
-                            }
-
-                        setState(() {
-                          isValidateEmail =
-                              EmailValidator.validate(emailController.text);
-                          //print('$isValidateEmail');
-                          //emailController.text.isEmpty ? isValidateEmail = true : isValidateEmail = false;
-                          passwordController.text.isEmpty
-                              ? isValidatePassword = true
-                              : isValidatePassword = false;
-                        });
-                        if (emailController.text.isNotEmpty &&
-                            passwordController.text.isNotEmpty) {
-                          if (emailController.text.toString() == getEmail &&
-                              passwordController.text.toString() ==
-                                  getPassword) {
-                            pref.setBool(Constants.IS_LOGIN, true);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MyHomePage()));
-                          } else {
-                            showSnackBar("Invalid credentials",context);
-                          }
-                        }
+                           if(_formKey.currentState!.validate()){
+                             final prefs = await SharedPreferences.getInstance();
+                             final sharedPrefData = prefs.getString(SharedPreferencesKey.userModel);
+                             var getEmail='';
+                             var getPassword='';
+                             var pref = await SharedPreferences.getInstance();
+                             if(sharedPrefData!=null){
+                               final Map<String, dynamic> data = jsonDecode(sharedPrefData);
+                               var sharedPreferencesModel =  SharedPreferencesModel.fromJson(data);
+                               getEmail =sharedPreferencesModel.email!;
+                               getPassword = sharedPreferencesModel.password!;
+                             }
+                             if(_emailController.text == getEmail &&
+                                 _passwordController.text ==
+                                     getPassword) {
+                               pref.setBool(SharedPreferencesKey.isLogin, true);
+                               Navigator.pushReplacement(
+                                   context,
+                                   MaterialPageRoute(
+                                       builder: (context) => MyHomePage()));
+                             }else{
+                               showSnackBar("Please provide valid credentials", context);
+                             }
+                           }
                       }, 30)),
                   const SizedBox(
                     height: 10,

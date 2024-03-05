@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import 'form/signup_profile_screen.dart';
+import '../form/signup_form.dart';
 
 class UserProfileScreen extends StatefulWidget{
   const UserProfileScreen({super.key});
@@ -12,6 +12,6 @@ class UserProfileScreen extends StatefulWidget{
 class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return SignUpProfileScreen('Edit Profile');
+    return SignUpProfileScreen('Edit\nProfile');
   }
 }
