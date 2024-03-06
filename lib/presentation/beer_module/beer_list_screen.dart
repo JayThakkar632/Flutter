@@ -1,11 +1,14 @@
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/beer_card.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module/widget/filter/filter_dialog.dart';
 import 'dart:convert';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../../Model/beer_details.dart';
 import '../../common_widget/appbar.dart';
 import '../../common_widget/snack_bar.dart';
+import '../../common_widget/text_form_field.dart';
 import 'beer_details_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -44,34 +47,54 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
   var _textFiledSearch = TextEditingController();
   var _searchingText = "";
   var _url="";
+  var _foodName="";
+  var _brewedBefore="";
+  var _brewedAfter="";
   late http.Response response;
 
   @override
   void initState() {
     _scrollController.addListener(scrolling);
-    getData(_searchingText);
+    getData();
     super.initState();
   }
 
-  Future<void> getData(String _text) async {
+  Future<void> getData() async {
     try{
       _page++;
       setState(() {
         _isLoading = true;
       });
-      _text.isEmpty ? _url= 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10' : _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10&beer_name=$_text';
+      _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10';
+      if(_searchingText.isNotEmpty){
+        _url+='&beer_name=$_searchingText';
+      }
+      if(_foodName.isNotEmpty){
+        _url+='&food=$_foodName';
+      }
+      if(_brewedBefore.isNotEmpty){
+        _url+='&brewed_before=$_brewedBefore';
+      }
+      if(_brewedAfter.isNotEmpty){
+        _url+='&brewed_after=$_brewedAfter';
+      }
+      print(_url);
+     // _searchingText.isEmpty ? _url= 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10' : _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10&beer_name=$_searchingText';
       response = await http.get(Uri.parse(_url));
       if (response.statusCode == 200) {
         setState(() {
           List<dynamic> decodedData = json.decode(response.body);
           List<BeerDetails> parsedBeers = List<BeerDetails>.from(
               decodedData.map((data) => BeerDetails.fromJson(data)));
-          _text.isNotEmpty ?  beers = [] : null;
+          _searchingText.isNotEmpty ?  beers = [] : null;
           beers.addAll(parsedBeers);
           _isLoading = false;
           _isLoadingForSearch = false;
         });
       } else {
+        setState(() {
+          _isLoading=false;
+        });
         showSnackBar("Invalid",context as BuildContext);
       }
     } on Exception catch(e){
@@ -86,22 +109,28 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
   void scrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      getData(_searchingText);
+      getData();
     }
   }
 
   void search(String text) {
     _page = 0;
-    getData(text);
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.filter_alt),
+          onPressed: () {
+            showFilterDialog(context);
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        body: Column(
           children: [
             Stack(
               alignment: Alignment.centerLeft,
@@ -115,7 +144,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                     search(_searchingText);
                   },
                 ),
-                _isLoadingForSearch ? Positioned(right: 10,
+                _isLoadingForSearch ? const Positioned(right: 10,
                   child: Align(alignment: Alignment.centerRight,
                     child: CircularProgressIndicator(),
                   ),
@@ -123,17 +152,17 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                     : Container(),
               ],
             ),
-            Container(
-              height: MediaQuery.sizeOf(context).height,
+            Expanded(
               child: ListView.builder(
                 controller: _scrollController,
                 scrollDirection: Axis.vertical,
-                padding: const EdgeInsets.only(left: 0, top: 20, bottom: 250),
+                padding: const EdgeInsets.only(left: 0, top: 20),
                 itemCount: beers.length + (_isLoading ? 1 : 0),
                 itemBuilder: (context, index) {
-                  print("isLoading$_isLoading");
+                  List<Color> colors = [Colors.blue, Colors.red, Colors.amberAccent,Colors.green,Colors.deepOrange];
+                  var colorIndex=index%colors.length;
                   if (index == beers.length) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else {
                     return GestureDetector(
                       onTap: () {
@@ -141,7 +170,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    BeerDetailsScreen(beerModel: beers[index],index: index,)));
+                                    BeerDetailsScreen(beerModel: beers[index],index: index,color:colors[colorIndex])));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(top: 15),
@@ -168,7 +197,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                                   const SizedBox(
                                     height: 25,
                                   ),
-                                  BeerCard(beerDetails: beers[index],),
+                                  BeerCard(beerDetails: beers[index],color: colors[colorIndex]),
                                 ]),
                             Positioned(
                                 right: 25,
@@ -193,4 +222,42 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
       ),
     );
   }
+  void showFilterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          title: const Center(child: Text('Choose your Filter')),
+          content: Container(
+             decoration: BoxDecoration(
+               borderRadius: BorderRadius.circular(30)
+             ),
+              height: MediaQuery.sizeOf(context).height*0.31,
+              width: MediaQuery.sizeOf(context).width*0.8,
+              child: FilterDialog(
+                onOkayCallback:(foodSearch,brewedBefore,brewedAfter){
+                  beers=[];
+                  _foodName=foodSearch;
+                  _brewedBefore=brewedBefore;
+                  _brewedAfter=brewedAfter;
+                  getData();
+                  Navigator.pop(context);
+                },
+                onResetCallBack: (){
+                  _foodName='';
+                  _brewedBefore='';
+                  _brewedAfter='';
+                  getData();
+                  Navigator.pop(context);
+                },foodSearch:_foodName,brewedAfter: _brewedAfter,brewedBefore: _brewedBefore,)
+          ),
+        );
+      },
+    );
+  }
 }
+
+

@@ -8,18 +8,20 @@ import '../../../ui_helper/common_style.dart';
 
 class BeerCard extends StatelessWidget{
   final BeerDetails beerDetails;
-  BeerCard({super.key, required this.beerDetails});
+  final Color color;
+
+  BeerCard({super.key, required this.beerDetails,required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      shadowColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+      shadowColor: color,
       elevation: 5,
       child: Container(
         padding: const EdgeInsets.all(25),
         width: MediaQuery.sizeOf(context).width,
         decoration: BoxDecoration(
-          color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          color: color,
           borderRadius:
           BorderRadius.circular(12),
         ),

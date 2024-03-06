@@ -8,13 +8,14 @@ import '../../Model/beer_details.dart';
 class BeerDetailsScreen extends StatelessWidget{
   final BeerDetails beerModel;
   final int index;
+  final Color color;
 
-  const BeerDetailsScreen({super.key, required this.beerModel,required this.index});
+  const BeerDetailsScreen({super.key, required this.beerModel,required this.index,required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.pinkAccent,
+      backgroundColor: color,
       resizeToAvoidBottomInset: false,
       //appBar: ToolBar(title: "Beer Details",context: context,),
       appBar:appBar(title: "Beer Details", context: context),
