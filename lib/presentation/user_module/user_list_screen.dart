@@ -4,6 +4,7 @@ import 'package:first_flutter_demo_app/presentation/user_module/user_details_scr
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import '../../common_widget/appbar.dart';
 import '../../common_widget/snack_bar.dart';
@@ -64,59 +65,63 @@ class _UserListState extends State<UserList> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: editText("Search here...", 20, false),
-              onChanged: (value){
-                setState(() {
-                  _searchedList = _userList
-                      .where(
-                        (user) => ((user.title??"").toLowerCase().contains(
-                      value.toLowerCase(),
-                    )),
-                  ).toList();
-                }
-                );
-              },
-            ),
-          ),
-          _isLoading ? Align(alignment: Alignment.center,child: CircularProgressIndicator()):SizedBox(),
-          const SizedBox(height: 5,),
-          Container(
-            height: MediaQuery.sizeOf(context).height,
-            child: Stack(
+    return Scaffold(
+      body:
+        Stack(
+          children: [
+            Column(
               children: [
-                ListView.separated(itemBuilder: (context,index){
-                    return GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>UserDetailsScreen(userDetails:_searchedList[index])));
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: editText("Search here...", 20, false),
+                    onChanged: (value){
+                      setState(() {
+                        _searchedList = _userList
+                            .where(
+                              (user) => ((user.title??"").toLowerCase().contains(
+                            value.toLowerCase(),
+                          )),
+                        ).toList();
+                      }
+                      );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text(_searchedList[index].title!),
-                        leading: Text(_searchedList[index].id.toString()),
-                        trailing: const Icon(Icons.person),
-                      )
-                    ),
-                  );
-                },itemCount: _searchedList.length, separatorBuilder: (BuildContext context, int index) {
-                  return const Divider(
-                    thickness: 1.0,
-                    color: Colors.grey,
-                    height: 1,
-                  );
-                },),
+                  ),
+                ),
+                const SizedBox(height: 5,),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      ListView.separated(itemBuilder: (context,index){
+                          return GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>UserDetailsScreen(userDetails:_searchedList[index])));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              title: Text(_searchedList[index].title!),
+                              leading: Text(_searchedList[index].id.toString()),
+                              trailing: const Icon(Icons.person),
+                            )
+                          ),
+                        );
+                      },itemCount: _searchedList.length, separatorBuilder: (BuildContext context, int index) {
+                        return const Divider(
+                          thickness: 1.0,
+                          color: Colors.grey,
+                          height: 1,
+                        );
+                      },),
 
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
+            _isLoading ? const Align(alignment: Alignment.center,child: CircularProgressIndicator()):_searchedList.isEmpty ? const Center(child: Text('No data found',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22))) : const SizedBox(),
+          ],
+        ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/beer_card.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/filter/filter_dialog.dart';
 import 'dart:convert';
@@ -43,6 +45,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
   List<BeerDetails> beers = [];
   bool _isLoading = false;
   bool _isLoadingForSearch = false;
+  bool _isLoadingForData = false;
   ScrollController _scrollController = ScrollController();
   var _textFiledSearch = TextEditingController();
   var _searchingText = "";
@@ -54,6 +57,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
 
   @override
   void initState() {
+    _isLoadingForData=true;
     _scrollController.addListener(scrolling);
     getData();
     super.initState();
@@ -63,7 +67,9 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
     try{
       _page++;
       setState(() {
-        _isLoading = true;
+        Timer(const Duration(seconds: 2),(){
+          _isLoading=true;
+        });
       });
       _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10';
       if(_searchingText.isNotEmpty){
@@ -79,7 +85,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
         _url+='&brewed_after=$_brewedAfter';
       }
       print(_url);
-     // _searchingText.isEmpty ? _url= 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10' : _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10&beer_name=$_searchingText';
+      // _searchingText.isEmpty ? _url= 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10' : _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10&beer_name=$_searchingText';
       response = await http.get(Uri.parse(_url));
       if (response.statusCode == 200) {
         setState(() {
@@ -90,10 +96,12 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
           beers.addAll(parsedBeers);
           _isLoading = false;
           _isLoadingForSearch = false;
+          _isLoadingForData = false;
         });
       } else {
         setState(() {
           _isLoading=false;
+          _isLoadingForData=false;
         });
         showSnackBar("Invalid",context as BuildContext);
       }
@@ -101,6 +109,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
       setState(() {
         _isLoading=false;
         _isLoadingForSearch=false;
+        _isLoadingForData=false;
       });
       showSnackBar(e.toString(), context);
     }
@@ -130,93 +139,93 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        body: Column(
+        body: Stack(
           children: [
-            Stack(
-              alignment: Alignment.centerLeft,
+            Column(
               children: [
-                TextField(
-                  controller: _textFiledSearch,
-                  decoration: editText("Search here", 10.0, false),
-                  onChanged: (value) {
-                    _isLoadingForSearch=true;
-                    _searchingText = value;
-                    search(_searchingText);
-                  },
-                ),
-                _isLoadingForSearch ? const Positioned(right: 10,
-                  child: Align(alignment: Alignment.centerRight,
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : Container(),
-              ],
-            ),
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                scrollDirection: Axis.vertical,
-                padding: const EdgeInsets.only(left: 0, top: 20),
-                itemCount: beers.length + (_isLoading ? 1 : 0),
-                itemBuilder: (context, index) {
-                  List<Color> colors = [Colors.blue, Colors.red, Colors.amberAccent,Colors.green,Colors.deepOrange];
-                  var colorIndex=index%colors.length;
-                  if (index == beers.length) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    BeerDetailsScreen(beerModel: beers[index],index: index,color:colors[colorIndex])));
+                Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    TextField(
+                      controller: _textFiledSearch,
+                      decoration: editText("Search here", 10.0, false),
+                      onChanged: (value) {
+                        _isLoadingForSearch=true;
+                        _searchingText = value;
+                        search(_searchingText);
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 200,
-                                    height: 70,
-                                    child: Text(
-                                      beers[index].tagline!,
-                                      style: textStyle(
-                                          Colors.black,
-                                          'Anta-Regular',
-                                          22,
-                                          FontWeight.bold),
-                                      textAlign: TextAlign.start,
-                                      maxLines: 2,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 25,
-                                  ),
-                                  BeerCard(beerDetails: beers[index],color: colors[colorIndex]),
-                                ]),
-                            Positioned(
-                                right: 25,
-                                top: 15,
-                                child: beers[index].imageUrl!=null ? Hero(tag:'BeerImage$index',child: CachedNetworkImage(height: 200,width:80,imageUrl:beers[index].imageUrl!,placeholder: (context, url) => Center(child: CircularProgressIndicator()),)):SizedBox(),)
+                    ),
+                    _isLoadingForSearch ? const Positioned(right: 10,
+                      child: Align(alignment: Alignment.centerRight,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                        : Container(),
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    scrollDirection: Axis.vertical,
+                    padding: const EdgeInsets.only(left: 0, top: 20),
+                    itemCount: beers.length + (_isLoading ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      List<Color> colors = [Colors.blue, Colors.red, Colors.amberAccent,Colors.green,Colors.deepOrange];
+                      var colorIndex=index%colors.length;
+                      return index == beers.length ? const Center(child: CircularProgressIndicator()):GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        BeerDetailsScreen(beerModel: beers[index],index: index,color:colors[colorIndex])));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 200,
+                                        height: 70,
+                                        child: Text(
+                                          beers[index].tagline!,
+                                          style: textStyle(
+                                              Colors.black,
+                                              'Anta-Regular',
+                                              22,
+                                              FontWeight.bold),
+                                          textAlign: TextAlign.start,
+                                          maxLines: 2,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 25,
+                                      ),
+                                      BeerCard(beerDetails: beers[index],color: colors[colorIndex]),
+                                    ]),
+                                Positioned(
+                                  right: 25,
+                                  top: 15,
+                                  child: beers[index].imageUrl!=null ? Hero(tag:'BeerImage$index',child: CachedNetworkImage(height: 200,width:80,imageUrl:beers[index].imageUrl!,placeholder: (context, url) => Center(child: CircularProgressIndicator()),)):SizedBox(),)
                                 // child: beers[index].imageUrl != null
                                 //     ? Image.network(beers[index].imageUrl!,
                                 //         height: 200)
                                 //     : SizedBox())
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
+                              ],
+                            ),
+                          ),
+                        );
+                    },
+                  ),
+                ),
+                //LastOrder()
+              ],
             ),
-
-            //LastOrder()
+            _isLoadingForData ? const Center(child: CircularProgressIndicator()) : beers.isEmpty ? Center(child: Text('No data found',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),)):SizedBox(),
           ],
         ),
       ),
@@ -232,9 +241,9 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
           ),
           title: const Center(child: Text('Choose your Filter')),
           content: Container(
-             decoration: BoxDecoration(
-               borderRadius: BorderRadius.circular(30)
-             ),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30)
+              ),
               height: MediaQuery.sizeOf(context).height*0.31,
               width: MediaQuery.sizeOf(context).width*0.8,
               child: FilterDialog(
