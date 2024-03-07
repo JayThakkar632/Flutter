@@ -3,4 +3,6 @@ class SharedPreferencesKey {
   static const String password = "password";
   static const String isLogin = "isLogin";
   static const String userModel = "userModel";
+  static const String userDetails = "userDetails";
+  static const String lastApiCallTime = "lastApiCallTime";
 }

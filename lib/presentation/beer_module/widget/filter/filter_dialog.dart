@@ -24,8 +24,6 @@ class _FilterDialogState extends State<FilterDialog> {
   final _brewedAfterController=TextEditingController();
   final _foodController=TextEditingController();
 
-
-
   @override
   void initState() {
     setData();
@@ -34,79 +32,83 @@ class _FilterDialogState extends State<FilterDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body:Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 50,
-              child: TextField(
-                readOnly: true,
-                onTap: (){
-                  openCalender(context,"");
-                },
-                controller: _brewedAfterController,
-                decoration: InputDecoration(
-                  labelText: 'Brewed After',
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30)
+      ),
+      height: MediaQuery.sizeOf(context).height*0.31,
+      width: MediaQuery.sizeOf(context).width*0.8,
+      child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 50,
+                child: TextField(
+                  readOnly: true,
+                  controller: _brewedAfterController,
+                  decoration: InputDecoration(
+                    labelText: 'Brewed After',
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                  ),
+                  onTap: (){
+                    openCalender(context,"");
+                  },
+                ),
+              ),
+              const SizedBox(height: 15,),
+              SizedBox(
+                height: 50,
+                child: TextField(
+                  readOnly: true,
+                  controller: _brewedBeforeController,
+                  decoration: InputDecoration(
+                    labelText: 'Brewed Before',
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20)),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20)),
+                  ),
+                  onTap: (){
+                    openCalender(context,"Brewed Before");
+                  },
                 ),
               ),
-            ),
-            const SizedBox(height: 15,),
-            SizedBox(
-              height: 50,
-              child: TextField(
-                readOnly: true,
-                onTap: (){
-                  openCalender(context,"Brewed Before");
-                },
-                controller: _brewedBeforeController,
-                decoration: InputDecoration(
-                  labelText: 'Brewed Before',
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
+              const SizedBox(height: 15,),
+              SizedBox(
+                height: 50,
+                child: TextField(
+                  controller: _foodController,
+                  decoration: InputDecoration(
+                    labelText: 'Search here for food',
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 15,),
-            SizedBox(
-              height: 50,
-              child: TextField(
-                controller: _foodController,
-                decoration: InputDecoration(
-                  labelText: 'Search here for food',
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 18,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RoundedElevatedButton(title: 'Reset',voidCallback: (){
-                  _foodController.text='';
-                  _brewedBeforeController.text='';
-                  _brewedAfterController.text='';
-                  return widget.onResetCallBack();
-                },color: Colors.blue,),
-                ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-                    onPressed:()=>widget.onOkayCallback(_foodController.text,_brewedBeforeController.text,_brewedAfterController.text)
-                    ,child: const Text('Okay',style: TextStyle(color: Colors.white))),
-              ],
-            )
-          ],
-        ),
+              const SizedBox(height: 18,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RoundedElevatedButton(title: 'Reset',voidCallback: (){
+                    _foodController.text='';
+                    _brewedBeforeController.text='';
+                    _brewedAfterController.text='';
+                    return widget.onResetCallBack();
+                  },color: Colors.blue,),
+                  ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.green,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+                      onPressed:()=>widget.onOkayCallback(_foodController.text,_brewedBeforeController.text,_brewedAfterController.text)
+                      ,child: const Text('Okay',style: TextStyle(color: Colors.white))),
+                ],
+              )
+            ],
+          ),
       ),
     );
   }
