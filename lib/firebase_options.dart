@@ -17,13 +17,19 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -46,30 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC1lBEJ-iOVqQ6gwottODdo5rzhfzZ7kTg',
-    appId: '1:45023907275:web:d1d41af51a81ca37f4fa4e',
-    messagingSenderId: '45023907275',
-    projectId: 'flutterdemo-57d17',
-    authDomain: 'flutterdemo-57d17.firebaseapp.com',
-    storageBucket: 'flutterdemo-57d17.appspot.com',
-    measurementId: 'G-VEV0BJ8P41',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBbsqH-pUl2rC13e7B3X6MtGt4_s1cj374',
     appId: '1:45023907275:android:67ce8e1823c36502f4fa4e',
     messagingSenderId: '45023907275',
     projectId: 'flutterdemo-57d17',
     storageBucket: 'flutterdemo-57d17.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD1QxlVSMF3ejstbvGjTzD-nLnR3gImUyU',
-    appId: '1:45023907275:ios:b02f2fc98ae741c1f4fa4e',
-    messagingSenderId: '45023907275',
-    projectId: 'flutterdemo-57d17',
-    storageBucket: 'flutterdemo-57d17.appspot.com',
-    iosBundleId: 'com.example.firstFlutterDemoApp',
   );
 }

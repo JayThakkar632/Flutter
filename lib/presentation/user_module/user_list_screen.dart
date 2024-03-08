@@ -12,6 +12,8 @@ import '../../common_widget/appbar.dart';
 import '../../common_widget/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../services/remote_config_service.dart';
+
 class UserListScreen extends StatelessWidget {
   const UserListScreen({super.key});
 
@@ -36,9 +38,6 @@ class _UserListState extends State<UserList> {
   List<UserDetails> _searchedList = [];
   var searchText = "";
   var _isLoading = false;
-
-  //late Timer _timer;
-  late DateTime _lastApiCallTime;
   late SharedPreferences sharedPreferences;
 
   @override
@@ -55,7 +54,6 @@ class _UserListState extends State<UserList> {
     if (data != null) {
       var list =
           data.map((item) => UserDetails.fromJson(json.decode(item))).toList();
-      print('shred');
       _isLoading = false;
       setState(() {
         _userList = [];
@@ -64,10 +62,10 @@ class _UserListState extends State<UserList> {
         _searchedList.addAll(_userList);
       });
     }
-    //print(data);
   }
 
   Future<void> checkTime() async {
+    var dynamicTime= (await RemoteConfigService().initializeConfig());
     sharedPreferences = await SharedPreferences.getInstance();
     var time =
         sharedPreferences.getString(SharedPreferencesKey.lastApiCallTime) ?? "";
@@ -76,7 +74,7 @@ class _UserListState extends State<UserList> {
     } else {
       var currentTime = DateTime.now();
       Duration diff = currentTime.difference(DateTime.parse(time));
-      if (diff.inSeconds >= 100) {
+      if (diff.inSeconds >= int.parse(dynamicTime)) {
         getData(searchText);
       } else {
         fetChDataFromTheLocalStorage();
