@@ -1,8 +1,11 @@
+import 'package:first_flutter_demo_app/bloc/logic/post_cubit.dart';
+import 'package:first_flutter_demo_app/bloc/presentation/beer_module/bloc_beer_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../common_widget/appbar.dart';
 import '../beer_module/beer_list_screen.dart';
 import '../user_module/user_list_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProgramListScreen extends StatelessWidget {
   const ProgramListScreen({super.key});
@@ -31,6 +34,7 @@ class _ListingState extends State<Listing> {
   final List<ColorName> arrayList = [
     ColorName(color: Colors.red, name: 'Beer'),
     ColorName(color: Colors.green, name: 'User Listing'),
+    ColorName(color: Colors.yellow, name: 'Beer Listing Using Bloc'),
   ];
 
   @override
@@ -75,9 +79,7 @@ class _ListingState extends State<Listing> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const BeerListScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const BeerListScreen()),
         );
         break;
       case 1:
@@ -85,6 +87,16 @@ class _ListingState extends State<Listing> {
           context,
           MaterialPageRoute(
             builder: (context) => const UserListScreen(),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                create: (context)=> PostCubit(),
+                child: const BlocBeerListScreen()),
           ),
         );
         break;
