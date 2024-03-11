@@ -13,6 +13,8 @@ import '../../Model/shared_preferences.dart';
 import '../../common_widget/snack_bar.dart';
 import '../../shared_preferences/shared_prefs_key.dart';
 import '../main.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,10 +45,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  var _emailController = TextEditingController();
-  var _passwordController = TextEditingController();
   var _opacityOfImage=1.0;
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
     KeyboardVisibilityController().onChange.listen((bool visible) {
@@ -120,12 +120,11 @@ class _LoginState extends State<Login> {
                   const SizedBox(
                     height: 30,
                   ),
-                  Form(
+                  FormBuilder(
                     key: _formKey,
                     child: Column(
                       children: [
-                        TextFormField(
-                          controller: _emailController,
+                        FormBuilderTextField(
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(labelText: 'Email',labelStyle: TextStyle(color: Colors.grey)),
@@ -135,25 +134,20 @@ class _LoginState extends State<Login> {
                           maxLines: 1,
                           cursorColor: Colors.green,
                           textInputAction: TextInputAction.next,
-                          validator: (value){
-                            if(value!.isEmpty){
-                              return 'Please enter email';
-                            }else if(!RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value)){
-                              return 'Please enter valid email';
-                            }
-                          },
+                            validator: FormBuilderValidators.compose([
+                              FormBuilderValidators.required(),
+                              FormBuilderValidators.email()
+                            ]), name: 'email',
                         ),
                         const SizedBox(height: 15),
-                        TextFormField(
-                          controller: _passwordController,
+                        FormBuilderTextField(
                           obscureText: true,
                           cursorColor: Colors.green,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: const InputDecoration(labelText: 'Password',labelStyle: TextStyle(color: Colors.grey)),
                           textInputAction: TextInputAction.next,
-                          validator: (value){
-                            return value!.isEmpty ?'Please enter password':null;
-                          },
+                          validator: FormBuilderValidators.required(
+                              errorText: "Please enter password"), name: 'password',
                         ),
                       ],
                     ),
@@ -164,7 +158,7 @@ class _LoginState extends State<Login> {
                       width: MediaQuery.sizeOf(context).width,
                       child: roundedElevatedButton("Sign in", Colors.green,
                           () async {
-                           if(_formKey.currentState!.validate()){
+                           if(_formKey.currentState!.saveAndValidate()){
                              final prefs = await SharedPreferences.getInstance();
                              final sharedPrefData = prefs.getString(SharedPreferencesKey.userModel);
                              var getEmail='';
@@ -176,8 +170,8 @@ class _LoginState extends State<Login> {
                                getEmail =sharedPreferencesModel.email!;
                                getPassword = sharedPreferencesModel.password!;
                              }
-                             if(_emailController.text == getEmail &&
-                                 _passwordController.text ==
+                             if(_formKey.currentState?.value['email'] == getEmail &&
+                                 _formKey.currentState?.value['password']  ==
                                      getPassword) {
                                pref.setBool(SharedPreferencesKey.isLogin, true);
                                Navigator.pushReplacement(

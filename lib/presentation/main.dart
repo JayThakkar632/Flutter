@@ -10,6 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +34,12 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         MonthYearPickerLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+        FormBuilderLocalizations.delegate,
+        FormBuilderLocalizations.delegate,
+      ],
+      supportedLocales: [
+        ...FormBuilderLocalizations.supportedLocales,
       ],
       home: SplashScreen(),
     );

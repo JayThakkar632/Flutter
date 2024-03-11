@@ -9,7 +9,7 @@ class SharedPreferencesModel {
   String? state;
   String? city;
   String? profile;
-  Map<String, bool>? hobby;
+  List<String>? hobby;
 
 
   SharedPreferencesModel({
@@ -56,7 +56,7 @@ class SharedPreferencesModel {
       state: json['state'],
       city: json['city'],
       profile: json['profile'],
-      hobby: Map<String, bool>.from(json['hobby']),
+      hobby: List<String>.from(json['hobby']),
     );
   }
 }

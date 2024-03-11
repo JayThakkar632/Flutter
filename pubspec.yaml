@@ -58,11 +58,15 @@ dev_dependencies:
   #month_year_picker:
   month_year_picker: ^0.3.0+1
   #firebase_core:
-  firebase_core: ^2.26.0
+  firebase_core: ^2.26.0123
   #firebase_remote_config:
   firebase_remote_config: ^4.3.16
   #bloc:
   flutter_bloc: ^8.1.4
+  #flutter_form_builder:
+  flutter_form_builder: ^9.2.1
+  #form_builder_validators
+  form_builder_validators: ^9.0.0-dev.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
