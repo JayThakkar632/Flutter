@@ -1,23 +1,22 @@
-import 'package:first_flutter_demo_app/bloc/logic/post_cubit.dart';
-import 'package:first_flutter_demo_app/bloc/logic/post_event.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../../common_widget/appbar.dart';
+import '../../../../../common_widget/appbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../logic/post_cubit.dart';
+import '../../logic/post_event.dart';
+import '../../logic/post_state.dart';
 
-import '../../../presentation/beer_module/widget/beer_card.dart';
 
-
-class BlocBeerListScreen extends StatefulWidget {
-  const BlocBeerListScreen({super.key});
+class CubitBeerListScreen extends StatefulWidget {
+  const CubitBeerListScreen({super.key});
 
   @override
-  State<BlocBeerListScreen> createState() => _BlocBeerListScreenState();
+  State<CubitBeerListScreen> createState() => _CubitBeerListScreenState();
 }
 
-class _BlocBeerListScreenState extends State<BlocBeerListScreen> {
+class _CubitBeerListScreenState extends State<CubitBeerListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

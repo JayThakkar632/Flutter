@@ -20,7 +20,7 @@ packages:
   bloc:
     dependency: transitive
     description:
-      name: bloc
+      name: cubit
       sha256: f53a110e3b48dcd78136c10daa5d51512443cea5e1348c9d80a320095fa2db9e
       url: "https://pub.dev"
     source: hosted

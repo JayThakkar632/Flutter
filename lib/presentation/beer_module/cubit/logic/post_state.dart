@@ -1,4 +1,5 @@
-import 'package:first_flutter_demo_app/bloc/data/model/beer_details.dart';
+
+import '../data/model/beer_details.dart';
 
 abstract class PostState{}
 
