@@ -1,4 +1,6 @@
 import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/bloc/post_bloc.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/bloc/post_event.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/data/repository/beer_repository.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/presentation/bloc_beer_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -106,8 +108,8 @@ class _ListingState extends State<Listing> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-                create: (context)=> PostBloc(),
+            builder: (context) => RepositoryProvider(
+                create: (context)=> BeerListRepository(),
                 child: const BlocBeerListScreen()),
           ),
         );

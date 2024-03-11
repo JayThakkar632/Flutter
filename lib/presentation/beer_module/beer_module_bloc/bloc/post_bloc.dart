@@ -3,24 +3,17 @@ import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc
 import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/data/repository/beer_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../data/model/beer_details.dart';
-
-class PostBloc extends Bloc<PostEvent,PostState>{
-  PostBloc():super(LoadingState()){
-
-    BeerListRepository beerListRepository = BeerListRepository();
-
-    void getBeerList() async {
-      try{
-        List<BeerDetails> beerList= await beerListRepository.getBeerList();
-        on((event, emit) => emit(SuccessState(beerList)));
-      }catch(e){
-        on((event, emit) => emit(FailureState(beerList)));
+class PostBloc extends Bloc<PostEvent, PostState> {
+  final BeerListRepository _repository;
+  PostBloc(this._repository) : super(LoadingState()) {
+    on<LoadedEvent>((event, emit) async {
+      emit(LoadingState());
+      try {
+        final beerList = await _repository.getBeerList();
+        emit(SuccessState(beerList));
+      } catch (e) {
+        emit(FailureState(e.toString()));
       }
-    }
-
-    // on<LoadingEvent>((event, emit) => emit(LoadingState()));
-    // on<LoadedEvent>((event, emit) => emit(SuccessState(event.beerList)));
-    // on<ErrorEvent>((event, emit) => emit(FailureState("")));
+    });
   }
 }

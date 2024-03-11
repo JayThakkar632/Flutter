@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import '../../../../../common_widget/appbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/post_cubit.dart';
-import '../../logic/post_event.dart';
 import '../../logic/post_state.dart';
 
 

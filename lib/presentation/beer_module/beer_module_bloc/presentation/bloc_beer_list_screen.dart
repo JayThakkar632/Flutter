@@ -1,5 +1,6 @@
 import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/bloc/post_bloc.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/bloc/post_event.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/data/repository/beer_repository.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,53 +55,56 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    TextField(
-                      controller: _textFiledSearch,
-                      decoration: editText("Search here", 10.0, false),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: BlocBuilder<PostBloc,PostState>(
-                    builder: (context,state){
-                      if(state is LoadingState){
-                        return Center(child: CircularProgressIndicator(),);
-                      }
-                      if(state is SuccessState){
-                        return ListView.builder(itemCount: state.beerList.length,
-                          itemBuilder: (context,index){
-                            return ListTile(title: Text(state.beerList[index].tagline?? ""),);
-                          },
-                        );
-                      }
-                      if(state is FailureState){
-                        return Center(child: Text('no data found'),);
-                      }
-                      return Container();
-                    },
+    return BlocProvider<PostBloc>(
+      create: (context)=>PostBloc(RepositoryProvider.of<BeerListRepository>(context))..add(LoadedEvent()),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.centerLeft,
+                    children: [
+                      TextField(
+                        controller: _textFiledSearch,
+                        decoration: editText("Search here", 10.0, false),
+                      ),
+                    ],
                   ),
-                ),
-                //LastOrder()
-              ],
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.filter_alt),
-          onPressed: () {
+                  Expanded(
+                    child: BlocBuilder<PostBloc,PostState>(
+                      builder: (context,state){
+                        if(state is LoadingState){
+                          return Center(child: CircularProgressIndicator(),);
+                        }
+                        if(state is SuccessState){
+                          return ListView.builder(itemCount: state.beerList.length,
+                            itemBuilder: (context,index){
+                              return ListTile(title: Text(state.beerList[index].tagline?? ""),);
+                            },
+                          );
+                        }
+                        if(state is FailureState){
+                          return Center(child: Text(state.error),);
+                        }
+                        return Container();
+                      },
+                    ),
+                  ),
+                  //LastOrder()
+                ],
+              ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.filter_alt),
+            onPressed: () {
 
-          },
+            },
+          ),
         ),
       ),
     );
