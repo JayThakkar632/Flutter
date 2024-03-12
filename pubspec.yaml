@@ -60,7 +60,7 @@ dev_dependencies:
   #firebase_core:
   firebase_core: ^2.26.0123
   #firebase_remote_config:
-  firebase_remote_config: ^4.3.16
+  firebase_remote_config: ^4.3.18
   #flutter_bloc:
   flutter_bloc: ^8.1.4
   #flutter_form_builder:
