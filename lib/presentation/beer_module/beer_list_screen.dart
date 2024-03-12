@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:first_flutter_demo_app/common_widget/top_widget.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/beer_card.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/filter/filter_dialog.dart';
 import 'dart:convert';
@@ -23,9 +24,9 @@ class BeerListScreen extends StatefulWidget {
 class _BeerListScreenState extends State<BeerListScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(title: "Beer", context: context),
-      body: const BeerDetailsList(),
+    return TopWidget(
+      title: "Beer",
+      child: const BeerDetailsList(),
     );
   }
 }
@@ -50,6 +51,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
   var brewedBefore = "";
   var brewedAfter = "";
   late http.Response response;
+  List<Color> colors = [Colors.blue, Colors.red, Colors.amberAccent, Colors.green, Colors.deepOrange];
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
         isLoading = true;
       });
       url = 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10';
+
       if (searchingText.isNotEmpty) {
         url += '&beer_name=$searchingText';
       }
@@ -77,15 +80,13 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
       if (brewedAfter.isNotEmpty) {
         url += '&brewed_after=$brewedAfter';
       }
-      print(url);
-      // _searchingText.isEmpty ? _url= 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10' : _url='https://api.punkapi.com/v2/beers?page=$_page&per_page=10&beer_name=$_searchingText';
       response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         setState(() {
           List<dynamic> decodedData = json.decode(response.body);
           List<BeerDetails> parsedBeers = List<BeerDetails>.from(
               decodedData.map((data) => BeerDetails.fromJson(data)));
-          searchingText.isNotEmpty ? beers = [] : null;
+          searchingText.isNotEmpty ? beers.clear() : null;
           beers.addAll(parsedBeers);
           isLoading = false;
           isLoadingForSearch = false;
@@ -123,8 +124,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
       padding: const EdgeInsets.all(8.0),
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        body: Stack(
-          children: [
+        body:
             Column(
               children: [
                 Stack(
@@ -157,13 +157,6 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                     padding: const EdgeInsets.only(left: 0, top: 20),
                     itemCount: beers.length + (isLoading ? 1 : 0),
                     itemBuilder: (context, index) {
-                      List<Color> colors = [
-                        Colors.blue,
-                        Colors.red,
-                        Colors.amberAccent,
-                        Colors.green,
-                        Colors.deepOrange
-                      ];
                       var colorIndex = index % colors.length;
                       return isLoading && index > beers.length-1 && _page != 1
                           ? const Padding(
@@ -173,16 +166,12 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                           : buildGestureDetector(
                               context, index, colors, colorIndex);
                     },
-                  ):const SizedBox(),
+                  ):isLoading && beers.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : beers.isEmpty
+                          ? const Center(child: Text('No data found'))
+                          : const SizedBox(),
                 ),
-                //LastOrder()
-              ],
-            ),
-            isLoading && beers.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : beers.isEmpty
-                    ? Center(child: Text('No data found'))
-                    : SizedBox()
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -222,7 +211,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
             title: const Center(child: Text('Choose your Filter')),
             content: FilterDialog(
               onOkayCallback: (foodSearch, brewedBefore, brewedAfter) {
-                beers = [];
+                beers.clear();
                 foodName = foodSearch;
                 this.brewedBefore = brewedBefore;
                 this.brewedAfter = brewedAfter;
@@ -230,7 +219,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                 Navigator.pop(context);
               },
               onResetCallBack: () {
-                beers = [];
+                beers.clear();
                 _page=0;
                 foodName = '';
                 brewedBefore = '';

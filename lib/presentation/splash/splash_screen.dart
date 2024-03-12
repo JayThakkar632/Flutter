@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../shared_preferences/shared_prefs_key.dart';
+import '../home_screen//home_screen.dart';
 import '../login/login_screen.dart';
-import '../main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -36,6 +36,6 @@ void navigateToScreen(BuildContext context) async {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                isLogin ? const MyHomePage() : const LoginScreen()));
+                isLogin ? const HomeScreen() : const LoginScreen()));
   });
 }

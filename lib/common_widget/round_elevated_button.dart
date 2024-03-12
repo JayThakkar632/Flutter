@@ -19,8 +19,28 @@ class RoundedElevatedButton extends StatelessWidget{
            voidCallback();
          },
       child: Text(title,style: styleForButton(Colors.white),),
-    style: ElevatedButton.styleFrom(backgroundColor: color,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius!))),
+    style: ElevatedButton.styleFrom(backgroundColor: color,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
     );
+
+  }
+
+}
+
+class RoundedOutlineButton extends StatelessWidget{
+  String title='';
+  Color color;
+  VoidCallback voidCallback;
+  double radius;
+  RoundedOutlineButton({required this.title,this.color=Colors.green,required this.voidCallback,this.radius=20,});
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: (){
+        voidCallback();
+      },
+      child: Text(title,style: styleForButton(Colors.green),),
+        style: OutlinedButton.styleFrom(backgroundColor: color,side: BorderSide(color: Colors.green,width: 1))    );
 
   }
 

@@ -44,7 +44,7 @@ class _UserListState extends State<UserList> {
   void initState() {
     super.initState();
     _isLoading = true;
-    checkTime();
+    checkLastApiTime();
   }
 
   Future<void> fetChDataFromTheLocalStorage() async {
@@ -56,41 +56,41 @@ class _UserListState extends State<UserList> {
           data.map((item) => UserDetails.fromJson(json.decode(item))).toList();
       _isLoading = false;
       setState(() {
-        _userList = [];
-        _searchedList = [];
+        _userList.clear();
+        _searchedList.clear();
         _userList.addAll(list);
         _searchedList.addAll(_userList);
       });
     }
   }
 
-  Future<void> checkTime() async {
-    var dynamicTime= (await RemoteConfigService().initializeConfig());
+  Future<void> checkLastApiTime() async {
+    var dynamicTime= await RemoteConfigService().initializeConfig();
     sharedPreferences = await SharedPreferences.getInstance();
     var time =
         sharedPreferences.getString(SharedPreferencesKey.lastApiCallTime) ?? "";
     if (time.isEmpty) {
-      getData(searchText);
+      getData();
     } else {
       var currentTime = DateTime.now();
       Duration diff = currentTime.difference(DateTime.parse(time));
       if (diff.inSeconds >= int.parse(dynamicTime)) {
-        getData(searchText);
+        getData();
       } else {
         fetChDataFromTheLocalStorage();
       }
     }
   }
 
-    Future<void> getData(String searchText) async {
+    Future<void> getData() async {
       try{
         var response= await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
         if (response.statusCode == 200) {
           setState(() {
             List<dynamic> decodedData = json.decode(response.body);
             List<UserDetails> parsedBeers = List<UserDetails>.from(decodedData.map((data) => UserDetails.fromJson(data)));
-            _userList=[];
-            _searchedList=[];
+            _userList.clear();
+            _searchedList.clear();
             _userList.addAll(parsedBeers);
             _searchedList.addAll(_userList);
             _isLoading=false;
@@ -119,16 +119,7 @@ class _UserListState extends State<UserList> {
                 child: TextField(
                   decoration: editText("Search here...", 20, false),
                   onChanged: (value) {
-                    setState(() {
-                      _searchedList = _userList
-                          .where(
-                            (user) =>
-                                ((user.title ?? "").toLowerCase().contains(
-                                      value.toLowerCase(),
-                                    )),
-                          )
-                          .toList();
-                    });
+                    _searchTextFromList(value);
                   },
                 ),
               ),
@@ -185,6 +176,19 @@ class _UserListState extends State<UserList> {
         ],
       ),
     );
+  }
+
+  void _searchTextFromList(String value) {
+     setState(() {
+      _searchedList = _userList
+          .where(
+            (user) =>
+                ((user.title ?? "").toLowerCase().contains(
+                      value.toLowerCase(),
+                    )),
+          )
+          .toList();
+    });
   }
 
   Future<void> saveDataInSharedPrefs() async {

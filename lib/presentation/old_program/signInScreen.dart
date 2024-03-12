@@ -2,10 +2,8 @@ import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../../common_widget/snack_bar.dart';
-import '../main.dart';
-
+import '../home_screen//home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -34,7 +32,7 @@ class SignInState extends State<SignInScreen> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => MyHomePage()));
+              builder: (context) => HomeScreen()));
     } else {
       showSnackBar('Please provide valid credentials',context);
     }

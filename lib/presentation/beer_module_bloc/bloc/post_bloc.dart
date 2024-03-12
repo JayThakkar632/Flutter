@@ -1,6 +1,6 @@
-import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/bloc/post_event.dart';
-import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/bloc/post_state.dart';
-import 'package:first_flutter_demo_app/presentation/beer_module/beer_module_bloc/data/repository/beer_repository.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module_bloc/bloc/post_event.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module_bloc/bloc/post_state.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module_bloc/data/repository/beer_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState> {
