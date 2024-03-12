@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../common_widget/top_widget.dart';
@@ -8,6 +10,7 @@ import '../beer_module_cubit/logic/post_cubit.dart';
 import '../beer_module_cubit/presentation/beer_module/cubit_beer_list_screen.dart';
 import '../user_module/user_list_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 
 class ProgramListScreen extends StatelessWidget {
@@ -15,7 +18,7 @@ class ProgramListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Listing();
+    return const Listing();
   }
 }
 
@@ -80,14 +83,6 @@ class _ListingState extends State<Listing> with AutomaticKeepAliveClientMixin {
   }
 
   void navigateToScreen(BuildContext context, int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RepositoryProvider(
-            create: (context)=> BeerListRepository(),
-            child: const BlocBeerListScreen()),
-      ),
-    );
     switch (index) {
       case 0:
         Navigator.push(
@@ -107,9 +102,7 @@ class _ListingState extends State<Listing> with AutomaticKeepAliveClientMixin {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-                create: (context)=> PostCubit(),
-                child: const CubitBeerListScreen()),
+            builder: (context) => const CubitBeerListScreen(),
           ),
         );
         break;
@@ -117,9 +110,7 @@ class _ListingState extends State<Listing> with AutomaticKeepAliveClientMixin {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RepositoryProvider(
-                create: (context)=> BeerListRepository(),
-                child: const BlocBeerListScreen()),
+            builder: (context) => const BlocBeerListScreen(),
           ),
         );
         break;

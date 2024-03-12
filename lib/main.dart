@@ -5,8 +5,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'firebase_options.dart';
 import 'presentation/splash/splash_screen.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const ProgramListScreen(),
     const UserProfileScreen(),
-    const SettingsScreen(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -49,6 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
       )
-      ,child: _pages[_selectedIndex],);
+      ,child: _pages[_selectedIndex],isMainPage: true,);
   }
 }

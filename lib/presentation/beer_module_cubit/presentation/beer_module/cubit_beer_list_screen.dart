@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../../../../common_widget/appbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../common_widget/top_widget.dart';
 import '../../logic/post_cubit.dart';
 import '../../logic/post_state.dart';
 
@@ -18,21 +19,18 @@ class CubitBeerListScreen extends StatefulWidget {
 class _CubitBeerListScreenState extends State<CubitBeerListScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(title: "Beer", context: context),
-      body: const BeerDetailsList(),
-    );
+    return BlocProvider(create: (context)=> PostCubit(),child: const CubitBeerDetailsList());
   }
 }
 
-class BeerDetailsList extends StatefulWidget {
-  const BeerDetailsList({super.key});
+class CubitBeerDetailsList extends StatefulWidget {
+  const CubitBeerDetailsList({super.key});
 
   @override
-  State<BeerDetailsList> createState() => _BeerDetailsListState();
+  State<CubitBeerDetailsList> createState() => _CubitBeerDetailsListState();
 }
 
-class _BeerDetailsListState extends State<BeerDetailsList> {
+class _CubitBeerDetailsListState extends State<CubitBeerDetailsList> {
   final _textFiledSearch = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
@@ -45,18 +43,19 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
   void scrolling() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        body: Stack(
+    return TopWidget(
+      title: "Beer List",
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.filter_alt),
+        onPressed: () {},
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
           children: [
             Column(
               children: [
@@ -90,12 +89,6 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
               ],
             ),
           ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.filter_alt),
-          onPressed: () {
-
-          },
         ),
       ),
     );

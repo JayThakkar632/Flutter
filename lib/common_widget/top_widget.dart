@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TopWidget extends StatelessWidget {
-  const TopWidget({super.key, required this.child, required this.title, this.isMainPage = false,this.bottomNavigationBar});
+  const TopWidget({super.key, required this.child, required this.title, this.isMainPage = false,this.bottomNavigationBar,this.floatingActionButton});
 
   final Widget child;
   final String title;
   final bool isMainPage;
   final BottomNavigationBar? bottomNavigationBar;
+  final FloatingActionButton? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class TopWidget extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.green,
         automaticallyImplyLeading: false,
-        leading: isMainPage ? InkWell(
+        leading: !isMainPage ? InkWell(
           child: const Icon(Icons.arrow_back,
             color: Colors.white,),
           onTap:(){Navigator.pop(context);}
@@ -25,6 +26,7 @@ class TopWidget extends StatelessWidget {
         title: Text(title,style:const TextStyle(color: Colors.white, fontFamily: 'Anta-Regular', fontSize: 22)),
       ),
       bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton: floatingActionButton,
       body: child);
       // body: Column(
       //   children: [

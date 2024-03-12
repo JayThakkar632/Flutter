@@ -1,11 +1,9 @@
-import 'dart:math';
-
-import 'package:first_flutter_demo_app/Model/beer_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../ui_helper/common_style.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import '../../../../ui_helper/common_style.dart';
+import '../../data/model/beer_details.dart';
 
 
 class BeerCard extends StatelessWidget{

@@ -9,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../Model/beer_details.dart';
-import '../../common_widget/appbar.dart';
 import '../../common_widget/snack_bar.dart';
 import 'beer_details_screen.dart';
 import 'package:http/http.dart' as http;
@@ -24,10 +23,7 @@ class BeerListScreen extends StatefulWidget {
 class _BeerListScreenState extends State<BeerListScreen> {
   @override
   Widget build(BuildContext context) {
-    return TopWidget(
-      title: "Beer",
-      child: const BeerDetailsList(),
-    );
+    return const BeerDetailsList();
   }
 }
 
@@ -67,19 +63,11 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
         isLoading = true;
       });
       url = 'https://api.punkapi.com/v2/beers?page=$_page&per_page=10';
-
-      if (searchingText.isNotEmpty) {
-        url += '&beer_name=$searchingText';
-      }
-      if (foodName.isNotEmpty) {
-        url += '&food=$foodName';
-      }
-      if (brewedBefore.isNotEmpty) {
-        url += '&brewed_before=$brewedBefore';
-      }
-      if (brewedAfter.isNotEmpty) {
-        url += '&brewed_after=$brewedAfter';
-      }
+      url += searchingText.isNotEmpty ? '&beer_name=$searchingText' : '';
+      url += foodName.isNotEmpty ? '&food=$foodName' : '';
+      url += brewedBefore.isNotEmpty ? '&brewed_before=$brewedBefore' : '';
+      url += brewedAfter.isNotEmpty ? '&brewed_after=$brewedAfter' : '';
+      print(url);
       response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         setState(() {
@@ -120,12 +108,18 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        body:
-            Column(
+    return TopWidget(
+      title: "Beer List",
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.filter_alt),
+        onPressed: () {
+          showFilterDialog(context);
+        },
+      ),
+      child:
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
               children: [
                 Stack(
                   alignment: Alignment.centerLeft,
@@ -172,15 +166,9 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
                           ? const Center(child: Text('No data found'))
                           : const SizedBox(),
                 ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.filter_alt),
-          onPressed: () {
-            showFilterDialog(context);
-          },
-        ),
-      ),
+                    ],
+                  ),
+          ),
     );
   }
 
@@ -211,6 +199,7 @@ class _BeerDetailsListState extends State<BeerDetailsList> {
             title: const Center(child: Text('Choose your Filter')),
             content: FilterDialog(
               onOkayCallback: (foodSearch, brewedBefore, brewedAfter) {
+                _page=0;
                 beers.clear();
                 foodName = foodSearch;
                 this.brewedBefore = brewedBefore;

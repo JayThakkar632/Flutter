@@ -2,13 +2,22 @@ import 'package:first_flutter_demo_app/presentation/settings/widget/dialog.dart'
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common_widget/round_elevated_button.dart';
+import '../../shared_preferences/shared_prefs_key.dart';
+import '../login/login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  late SharedPreferences _prefs;
+
+  SettingsScreen({super.key}) {
+    _loadSharedPreferences();
+  }
+
+  Future<void> _loadSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var pref = SharedPreferences.getInstance();
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +33,11 @@ class SettingsScreen extends StatelessWidget {
                         positiveButtonText: 'Yes',
                         negativeButtonText: 'No',
                         positiveButtonCallBack: () {
-                          Navigator.pop(context);
+                          _prefs.setBool(SharedPreferencesKey.isLogin, false);
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
                         },
                         negativeButtonCallBack: () {
                           Navigator.pop(context);
@@ -45,7 +58,13 @@ class SettingsScreen extends StatelessWidget {
                         positiveButtonText: 'Yes',
                         negativeButtonText: 'No',
                         positiveButtonCallBack: () {
-                          Navigator.pop(context);
+                          _prefs.remove(SharedPreferencesKey.isLogin);
+                          _prefs.remove(SharedPreferencesKey.email);
+                          _prefs.remove(SharedPreferencesKey.password);
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
                         },
                         negativeButtonCallBack: () {
                           Navigator.pop(context);
@@ -58,30 +77,3 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
-
-
-// AlertDialog(
-//   title: Text(label),
-//   actions: <Widget>[
-//     TextButton(
-//       onPressed: () => Navigator.pop(context),
-//       child: const Text('No'),
-//     ),
-//     TextButton(
-//       onPressed: () async {
-//         var pref = await SharedPreferences.getInstance();
-//         if(dialog  == 'logout'){
-//           pref.setBool(SharedPreferencesKey.isLogin, false);
-//         }else{
-//           pref.remove(SharedPreferencesKey.isLogin);
-//           pref.remove(SharedPreferencesKey.email);
-//           pref.remove(SharedPreferencesKey.password);
-//         }
-//         Navigator.pushReplacement(context,
-//             MaterialPageRoute(
-//                 builder: (context) => const LoginScreen()));
-//       },
-//       child: const Text('Yes'),
-//     ),
-//   ],
-// ),
