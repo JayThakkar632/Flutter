@@ -37,6 +37,7 @@ class BlocBeerDetailsScreen extends StatefulWidget {
 
 class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
   final _textFiledSearch = TextEditingController();
+  late PostBloc bloc;
   bool isLoadingForSearch = false;
   List<Color> colors = [
     Colors.blue,
@@ -48,14 +49,20 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
 
   @override
   void initState() {
+    bloc=PostBloc(context.read<BeerListRepository>());
     super.initState();
+  }
+
+  void searching(String searchText){
+    isLoadingForSearch = true;
+    bloc.add(LoadedEvent(searchedText: searchText));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PostBloc>(
         create: (context) =>
-            PostBloc(context.read<BeerListRepository>())..add(LoadedEvent()),
+            bloc..add(LoadedEvent()),
         child: TopWidget(
           title: "Beer List",
           floatingActionButton: FloatingActionButton(
@@ -75,19 +82,19 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
                           controller: _textFiledSearch,
                           decoration: editText("Search here", 10.0, false),
                           onChanged: (value) {
-                            isLoadingForSearch = true;
-                            PostBloc(context.read<BeerListRepository>()).add(LoadedEvent(searchedText: value));
+                            searching(value);
+
                           },
                         ),
-                        // context.read<PostBloc>().isLoadingSearch
-                        //     ? const Positioned(
-                        //   right: 10,
-                        //   child: Align(
-                        //     alignment: Alignment.centerRight,
-                        //     child: CircularProgressIndicator(),
-                        //   ),
-                        // )
-                        //     : Container(),
+                        isLoadingForSearch
+                            ? const Positioned(
+                          right: 10,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                            : Container(),
                       ],
                     ),
                     Expanded(

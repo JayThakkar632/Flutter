@@ -19,6 +19,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       on<LoadedEvent>((event, emit) async {
         emit(LoadingState([]));
         final List<BeerDetails>posts;
+        page=1;
+        isLoadingMore=false;
         posts= await _repository.getBeerList(page,event.searchedText);
         emit(SuccessState(posts: posts));
       });
