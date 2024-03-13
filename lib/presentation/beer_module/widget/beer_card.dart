@@ -1,9 +1,6 @@
-import 'dart:math';
-
-import 'package:first_flutter_demo_app/Model/beer_details.dart';
+import 'package:first_flutter_demo_app/model/beer_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../ui_helper/common_style.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -100,9 +97,9 @@ class BeerCard extends StatelessWidget{
                   width: 80,
                   imageUrl: beerDetails[index].imageUrl!,
                   placeholder: (context, url) =>
-                      Center(child: CircularProgressIndicator()),
+                      const Center(child: CircularProgressIndicator()),
                 ))
-                : SizedBox(),
+                : const SizedBox(),
           )
         ],
       ),

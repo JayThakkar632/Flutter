@@ -31,7 +31,7 @@ class SignUpFormKey {
 class SignUpForm extends StatefulWidget {
   final bool isFromEditProfile;
 
-  SignUpForm({this.isFromEditProfile = false, super.key});
+  const SignUpForm({this.isFromEditProfile = false, super.key});
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -41,14 +41,14 @@ class _SignUpFormState extends State<SignUpForm> {
   var _path = '';
   DateTime? _selectedDate;
   XFile? _image;
-  List<String> _hobby = [
+  final List<String> _hobby = [
     'Reading',
     'Cooking',
     'Playing',
     'Travelling',
     'Gaming'
   ];
-  List<dynamic> _selectedHobby = [];
+  final List<dynamic> _selectedHobby = [];
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -125,7 +125,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         labelStyle: TextStyle(color: Colors.grey)),
                     maxLines: 1,
                     inputFormatters: [
-                      FilteringTextInputFormatter.deny(RegExp(r'\.'))
+                      FilteringTextInputFormatter.digitsOnly
                     ],
                     keyboardType: TextInputType.number,
                     cursorColor: Colors.green,
@@ -175,7 +175,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           imagePicker();
                         },
                       ),
-                      Spacer(),
+                      const Spacer(),
                       _path.isNotEmpty
                           ? CircleAvatar(
                               backgroundImage: FileImage(File(_path)),
@@ -205,37 +205,35 @@ class _SignUpFormState extends State<SignUpForm> {
                     },
                   ),
                   const SizedBox(height: 45),
-                  SizedBox(
-                      height: 50,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: RoundedElevatedButton(
-                        title: !widget.isFromEditProfile
-                            ? "Sign Up"
-                            : "Update Profile",
-                        voidCallback: () async {
-                          if (_formKey.currentState!.saveAndValidate()) {
-                            var prefs = await SharedPreferences.getInstance();
-                            String encodedMap =
-                                json.encode(_formKey.currentState?.value);
-                            prefs.setString(
-                                SharedPreferencesKey.signUpData, encodedMap);
-                            prefs.setString(
-                                SharedPreferencesKey.profileImage, _path);
-                            showSnackBar(
-                                !widget.isFromEditProfile
-                                    ? 'SignUp Successfully'
-                                    : 'Profile Updated Successfully',
-                                context);
+                  RoundedElevatedButton(
+                    width: MediaQuery.sizeOf(context).width,
+                    title: !widget.isFromEditProfile
+                        ? "Sign Up"
+                        : "Update Profile",
+                    voidCallback: () async {
+                      if (_formKey.currentState!.saveAndValidate()) {
+                        var prefs = await SharedPreferences.getInstance();
+                        String encodedMap =
+                            json.encode(_formKey.currentState?.value);
+                        prefs.setString(
+                            SharedPreferencesKey.signUpData, encodedMap);
+                        prefs.setString(
+                            SharedPreferencesKey.profileImage, _path);
+                        showSnackBar(
                             !widget.isFromEditProfile
-                                ? Timer(const Duration(seconds: 5), () {
-                                    Navigator.pop(context);
-                                  })
-                                : null;
-                          }
-                        },
-                        radius: 30,
-                      )),
-                  SizedBox(
+                                ? 'SignUp Successfully'
+                                : 'Profile Updated Successfully',
+                            context);
+                        !widget.isFromEditProfile
+                            ? Future.delayed(const Duration(seconds: 5), () {
+                                Navigator.pop(context);
+                              })
+                            : null;
+                      }
+                    },
+                    radius: 30,
+                  ),
+                  const SizedBox(
                     height: 30,
                   )
                 ],

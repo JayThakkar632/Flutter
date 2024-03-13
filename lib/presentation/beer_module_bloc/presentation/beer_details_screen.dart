@@ -1,9 +1,8 @@
-import 'package:first_flutter_demo_app/common_widget/appbar.dart';
+import 'package:first_flutter_demo_app/common_widget/top_widget.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/presentation/widget/beer_details_container.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../data/model/beer_details.dart';
 
 class BeerDetailsScreen extends StatelessWidget{
@@ -15,12 +14,10 @@ class BeerDetailsScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: color,
-      resizeToAvoidBottomInset: false,
-      //appBar: ToolBar(title: "Beer Details",context: context,),
-      appBar:appBar(title: "Beer Details", context: context),
-      body: Stack(
+    return TopWidget(
+      title: 'Beer Details',
+      bgColor: color,
+      child: Stack(
         children: [
           buildTopView(),
           Align(

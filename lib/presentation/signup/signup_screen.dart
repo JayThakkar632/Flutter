@@ -68,7 +68,7 @@ class _SignupScreenOneState extends State<SignUpScreenOne> {
                     const SizedBox(
                       height: 30,
                     ),
-                    SignUpForm(),
+                    const SignUpForm(),
                     const SizedBox(
                       height: 30,
                     ),

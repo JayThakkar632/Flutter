@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../form/signup_form.dart';
 
 class UserProfileScreen extends StatefulWidget{
@@ -10,11 +9,10 @@ class UserProfileScreen extends StatefulWidget{
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> with AutomaticKeepAliveClientMixin {
-  var _opacityOfImage = 1.0;
+class _UserProfileScreenState extends State<UserProfileScreen>{
+  final _opacityOfImage = 1.0;
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
         backgroundColor: Colors.white,
         body: Stack(
@@ -53,18 +51,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> with AutomaticKee
             ),
             SizedBox(
               height: MediaQuery.sizeOf(context).height,
-              child: SingleChildScrollView(
+              child: const SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(top: 200, left: 30),
                       child: Text(
                         "Edit\nAccount",
                         style: TextStyle(fontSize: 35, color: Colors.green),
                       ),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 30,
                     ),
                     SignUpForm(isFromEditProfile: true,),
@@ -75,7 +73,4 @@ class _UserProfileScreenState extends State<UserProfileScreen> with AutomaticKee
           ],
         ));
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

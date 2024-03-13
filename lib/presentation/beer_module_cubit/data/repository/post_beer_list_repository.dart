@@ -1,9 +1,6 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import '../model/beer_details.dart';
-
 
 class PostBeerListRepository {
   String url='https://api.punkapi.com/v2/beers?page=1&per_page=10';

@@ -49,6 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
       )
-      ,child: _pages[_selectedIndex],isMainPage: true,);
+      ,isMainPage: true,child: IndexedStack(
+      index: _selectedIndex,
+      children: _pages,
+    ),);
   }
 }

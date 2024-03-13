@@ -22,7 +22,9 @@ class BlocBeerListScreen extends StatefulWidget {
 class _BlocBeerListScreenState extends State<BlocBeerListScreen> {
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(create: (context)=> BeerListRepository(),child: const BlocBeerDetailsScreen());
+    return RepositoryProvider(
+        create: (context) => BeerListRepository(),
+        child: const BlocBeerDetailsScreen());
   }
 }
 
@@ -35,33 +37,25 @@ class BlocBeerDetailsScreen extends StatefulWidget {
 
 class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
   final _textFiledSearch = TextEditingController();
-  List<Color> colors = [Colors.blue, Colors.red, Colors.amberAccent, Colors.green, Colors.deepOrange];
-  final ScrollController _scrollController = ScrollController();
-  var _page=1;
+  bool isLoadingForSearch = false;
+  List<Color> colors = [
+    Colors.blue,
+    Colors.red,
+    Colors.amberAccent,
+    Colors.green,
+    Colors.deepOrange
+  ];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(scrolling);
-  }
-
-  void scrolling() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      setState(() {
-        _page++;
-        PostBloc(RepositoryProvider.of<BeerListRepository>(context))
-          ..add(LoadedEvent(_page));
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PostBloc>(
         create: (context) =>
-            PostBloc(RepositoryProvider.of<BeerListRepository>(context))
-              ..add(LoadedEvent(_page)),
+            PostBloc(context.read<BeerListRepository>())..add(LoadedEvent()),
         child: TopWidget(
           title: "Beer List",
           floatingActionButton: FloatingActionButton(
@@ -80,27 +74,47 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
                         TextField(
                           controller: _textFiledSearch,
                           decoration: editText("Search here", 10.0, false),
+                          onChanged: (value) {
+                            isLoadingForSearch = true;
+                            PostBloc(context.read<BeerListRepository>()).add(LoadedEvent(searchedText: value));
+                          },
                         ),
+                        // context.read<PostBloc>().isLoadingSearch
+                        //     ? const Positioned(
+                        //   right: 10,
+                        //   child: Align(
+                        //     alignment: Alignment.centerRight,
+                        //     child: CircularProgressIndicator(),
+                        //   ),
+                        // )
+                        //     : Container(),
                       ],
                     ),
                     Expanded(
                       child: BlocBuilder<PostBloc, PostState>(
                         builder: (context, state) {
                           if (state is LoadingState) {
-                            return Center(
+                            return const Center(
                               child: CircularProgressIndicator(),
                             );
                           }
                           if (state is SuccessState) {
                             return ListView.builder(
-                              controller: _scrollController,
+                              controller:context.read<PostBloc>().scrollController,
                               scrollDirection: Axis.vertical,
                               padding: const EdgeInsets.only(left: 0, top: 20),
-                              itemCount: state.beerList.length,
+                              itemCount: state.posts.length + (context.read<PostBloc>().isLoadingMore ? 1 : 0),
                               itemBuilder: (context, index) {
-                                var colorIndex = index % colors.length;
-                                return buildGestureDetector(
-                                    context, index, colors, colorIndex,state.beerList);
+                                if (index > state.posts.length-1) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Center(child: CircularProgressIndicator()),
+                                  );
+                                } else {
+                                  var colorIndex = index % colors.length;
+                                  return buildGestureDetector(context, index,
+                                      colors, colorIndex, state.posts);
+                                }
                               },
                             );
                           }
@@ -122,7 +136,8 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
         ));
   }
 
-  GestureDetector buildGestureDetector(BuildContext context, int index, List<Color> colors, int colorIndex, List<BeerDetails> beers) {
+  GestureDetector buildGestureDetector(BuildContext context, int index,
+      List<Color> colors, int colorIndex, List<BeerDetails> beers) {
     return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -133,7 +148,6 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
                       index: index,
                       color: colors[colorIndex])));
         },
-        child:BeerCard(beerDetails: beers, color: colors[colorIndex],index:index)
-    );
+        child: BeerCard(beerDetails: beers, color: colors[colorIndex], index: index));
   }
 }

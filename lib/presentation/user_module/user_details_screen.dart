@@ -1,7 +1,6 @@
+import 'package:first_flutter_demo_app/common_widget/top_widget.dart';
 import 'package:flutter/material.dart';
-
-import '../../Model/user_details.dart';
-import '../../common_widget/appbar.dart';
+import '../../model/user_details.dart';
 
 class UserDetailsScreen extends StatelessWidget{
   final UserDetails userDetails;
@@ -9,8 +8,9 @@ class UserDetailsScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar:appBar(title: "User Details", context: context),body: Padding(
+    return TopWidget(
+      title: 'User Details',
+        child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

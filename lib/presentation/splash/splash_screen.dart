@@ -31,11 +31,19 @@ class _SplashScreenState extends State<SplashScreen> {
 void navigateToScreen(BuildContext context) async {
   var pref = await SharedPreferences.getInstance();
   var isLogin = pref.getBool(SharedPreferencesKey.isLogin) ?? false;
-  Timer(const Duration(seconds: 5), () {
+
+  Future.delayed(const Duration(seconds: 5), (){
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                isLogin ? const HomeScreen() : const LoginScreen()));
+            isLogin ? const HomeScreen() : const LoginScreen()));
   });
+  // Timer(const Duration(seconds: 5), () {
+  //   Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) =>
+  //               isLogin ? const HomeScreen() : const LoginScreen()));
+  // });
 }

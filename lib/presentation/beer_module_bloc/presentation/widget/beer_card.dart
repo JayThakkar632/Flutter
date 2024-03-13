@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../../../../ui_helper/common_style.dart';
 import '../../data/model/beer_details.dart';
 
@@ -98,9 +97,9 @@ class BeerCard extends StatelessWidget{
                   width: 80,
                   imageUrl: beerDetails[index].imageUrl!,
                   placeholder: (context, url) =>
-                      Center(child: CircularProgressIndicator()),
+                      const Center(child: CircularProgressIndicator()),
                 ))
-                : SizedBox(),
+                : const SizedBox(),
           )
         ],
       ),

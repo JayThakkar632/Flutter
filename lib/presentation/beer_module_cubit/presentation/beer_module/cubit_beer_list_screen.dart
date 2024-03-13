@@ -2,12 +2,10 @@ import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../../../../common_widget/appbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../common_widget/top_widget.dart';
 import '../../logic/post_cubit.dart';
 import '../../logic/post_state.dart';
-
 
 class CubitBeerListScreen extends StatefulWidget {
   const CubitBeerListScreen({super.key});
@@ -72,7 +70,7 @@ class _CubitBeerDetailsListState extends State<CubitBeerDetailsList> {
                   child: BlocBuilder<PostCubit,PostState>(
                     builder: (context,state){
                       if(state is PostLoadingState){
-                        return Center(child: CircularProgressIndicator(),);
+                        return const Center(child: CircularProgressIndicator(),);
                       }
                       if(state is PostLoadedState){
                         return ListView.builder(itemCount: state.beerList.length,
@@ -81,7 +79,7 @@ class _CubitBeerDetailsListState extends State<CubitBeerDetailsList> {
                           },
                         );
                       }
-                      return Center(child: Text('no data found'),);
+                      return const Center(child: Text('no data found'),);
                     },
                   ),
                 ),

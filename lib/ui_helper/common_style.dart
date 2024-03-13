@@ -30,13 +30,13 @@ ElevatedButton roundedElevatedButton(String? text, Color? bgColor,VoidCallback o
     onPressed: () {
       onPressedCallback();
     },
+    style: ElevatedButton.styleFrom(
+        backgroundColor: bgColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
     child: Text(
       "$text",
       style: styleForButton(Colors.white),
     ),
-    style: ElevatedButton.styleFrom(
-        backgroundColor: bgColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
   );
 }
 
@@ -45,12 +45,12 @@ OutlinedButton roundedOutLinedButton(String? text, Color? bgColor,VoidCallback o
     onPressed: () {
       onPressedCallback();
     },
+    style: OutlinedButton.styleFrom(
+        backgroundColor: bgColor,side: const BorderSide(color: Colors.black,width: 3)),
     child: Text(
       "$text",
       style: styleForButton(Colors.black),
-    ),
-    style: OutlinedButton.styleFrom(
-        backgroundColor: bgColor,side: BorderSide(color: Colors.black,width: 3))
+    )
   );
 }
 
@@ -59,11 +59,11 @@ OutlinedButton roundedOutLinedButtonOne(String? text, Color? bgColor,VoidCallbac
       onPressed: () {
         onPressedCallback();
       },
+      style: OutlinedButton.styleFrom(
+          backgroundColor: bgColor,side: const BorderSide(color: Colors.green,width: 1)),
       child: Text(
         "$text",
         style: styleForButton(textColor),
-      ),
-      style: OutlinedButton.styleFrom(
-          backgroundColor: bgColor,side: BorderSide(color: Colors.green,width: 1))
+      )
   );
 }

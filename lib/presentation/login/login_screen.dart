@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:first_flutter_demo_app/presentation/signup/signup_screen.dart';
-import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common_widget/round_elevated_button.dart';
+import '../../common_widget/rounded_outline_button.dart';
 import '../../common_widget/snack_bar.dart';
 import '../../shared_preferences/shared_prefs_key.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -43,7 +43,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  var _opacityOfImage = 1.0;
+  final _opacityOfImage = 1.0;
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -166,46 +166,44 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 45),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: SizedBox(
-                      height: 50,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: RoundedElevatedButton(
-                          title: "Sign in",
-                          color: Colors.green,
-                          voidCallback: () async {
-                            if (_formKey.currentState!.saveAndValidate()) {
-                              final prefs = await SharedPreferences.getInstance();
-                              var sharedPrefData = prefs.getString(SharedPreferencesKey.signUpData) ?? "";
-                              final Map<String, dynamic> data = jsonDecode(sharedPrefData);
-                              var getEmail="";
-                              var getPassword="";
-                              data.forEach((key, value) {
-                                if(key == LoginFormKey.email){
-                                  getEmail=value;
-                                }
-                                if(key == LoginFormKey.psw){
-                                  getPassword=value;
-                                }
-                              });
-                              if (_formKey.currentState
-                                          ?.value[LoginFormKey.email] ==
-                                      getEmail &&
-                                  _formKey.currentState
-                                          ?.value[LoginFormKey.psw] ==
-                                      getPassword) {
-                                prefs.setBool(
-                                    SharedPreferencesKey.isLogin, true);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
-                              } else {
-                                showSnackBar("Please provide valid credentials",
-                                    context);
-                              }
+                  child: RoundedElevatedButton(
+                    width: MediaQuery.sizeOf(context).width,
+                      title: "Sign in",
+                      color: Colors.green,
+                      voidCallback: () async {
+                        if (_formKey.currentState!.saveAndValidate()) {
+                          final prefs = await SharedPreferences.getInstance();
+                          var sharedPrefData = prefs.getString(SharedPreferencesKey.signUpData) ?? "";
+                          final Map<String, dynamic> data = jsonDecode(sharedPrefData);
+                          var getEmail="";
+                          var getPassword="";
+                          data.forEach((key, value) {
+                            if(key == LoginFormKey.email){
+                              getEmail=value;
                             }
-                          },
-                          radius: 30)),
+                            if(key == LoginFormKey.psw){
+                              getPassword=value;
+                            }
+                          });
+                          if (_formKey.currentState
+                                      ?.value[LoginFormKey.email] ==
+                                  getEmail &&
+                              _formKey.currentState
+                                      ?.value[LoginFormKey.psw] ==
+                                  getPassword) {
+                            prefs.setBool(
+                                SharedPreferencesKey.isLogin, true);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const HomeScreen()));
+                          } else {
+                            showSnackBar("Please provide valid credentials",
+                                context);
+                          }
+                        }
+                      },
+                      radius: 30),
                 ),
                 const SizedBox(
                   height: 10,
@@ -219,13 +217,11 @@ class _LoginState extends State<Login> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: SizedBox(
-                      height: 50,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: RoundedOutlineButton(
-                          title: "Sign in with Google",
-                          color: Colors.white12,
-                          voidCallback: () {})),
+                  child: RoundedOutlineButton(
+                    width: MediaQuery.sizeOf(context).width,
+                      title: "Sign in with Google",
+                      color: Colors.white12,
+                      voidCallback: () {}),
                 ),
                 const SizedBox(
                   height: 50,
@@ -257,7 +253,7 @@ class _LoginState extends State<Login> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            SignUpScreenOne()));
+                                            const SignUpScreenOne()));
                               })
                       ],
                     ),

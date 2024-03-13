@@ -32,37 +32,39 @@ class Listing extends StatefulWidget {
 class ColorName {
   final Color color;
   final String name;
+  final Widget screeName;
 
-  ColorName({required this.color, required this.name});
+  ColorName({required this.color, required this.name,required this.screeName});
 }
 
-class _ListingState extends State<Listing> with AutomaticKeepAliveClientMixin {
+class _ListingState extends State<Listing>{
 
   final List<ColorName> arrayList = [
-    ColorName(color: Colors.red, name: 'Beer'),
-    ColorName(color: Colors.green, name: 'User Listing'),
-    ColorName(color: Colors.yellow, name: 'Beer Listing Using Cubit'),
-    ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc'),
+    ColorName(color: Colors.red, name: 'Beer',screeName: const BeerListScreen()),
+    ColorName(color: Colors.green, name: 'User Listing',screeName: const UserListScreen()),
+    ColorName(color: Colors.yellow, name: 'Beer Listing Using Cubit',screeName: const CubitBeerListScreen()),
+    ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc',screeName: const BlocBeerListScreen()),
   ];
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.sizeOf(context).height,
         child: ListView.builder(
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                navigateToScreen(context, index);
+                Navigator.push(
+                  context,MaterialPageRoute(builder: (context) => arrayList[index].screeName),
+                );
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
                       color: arrayList[index].color,
-                      borderRadius: BorderRadius.all(Radius.circular(50))),
+                      borderRadius: const BorderRadius.all(Radius.circular(50))),
                   height: 100,
                   child: Center(
                       child: Text(
@@ -81,42 +83,4 @@ class _ListingState extends State<Listing> with AutomaticKeepAliveClientMixin {
       ),
     );
   }
-
-  void navigateToScreen(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const BeerListScreen()),
-        );
-        break;
-      case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const UserListScreen(),
-          ),
-        );
-        break;
-      case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const CubitBeerListScreen(),
-          ),
-        );
-        break;
-      case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const BlocBeerListScreen(),
-          ),
-        );
-        break;
-    }
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -2,17 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TopWidget extends StatelessWidget {
-  const TopWidget({super.key, required this.child, required this.title, this.isMainPage = false,this.bottomNavigationBar,this.floatingActionButton});
+  const TopWidget({super.key, required this.child, required this.title, this.isMainPage = false,this.bottomNavigationBar,this.floatingActionButton,this.bgColor=Colors.white});
 
   final Widget child;
   final String title;
   final bool isMainPage;
   final BottomNavigationBar? bottomNavigationBar;
   final FloatingActionButton? floatingActionButton;
+  final Color bgColor;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.green,

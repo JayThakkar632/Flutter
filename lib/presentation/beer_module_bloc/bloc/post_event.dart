@@ -1,6 +1,9 @@
+
 abstract class PostEvent{}
 class LoadedEvent extends PostEvent{
-  final int page;
-  LoadedEvent(this.page);
+  String searchedText;
+  LoadedEvent({this.searchedText=''});
 }
+
+class LoadMoreEvent extends PostEvent{}
 

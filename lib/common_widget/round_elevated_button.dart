@@ -1,66 +1,32 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-
 import '../ui_helper/common_style.dart';
-
 
 class RoundedElevatedButton extends StatelessWidget{
   String title='';
   Color color;
   VoidCallback voidCallback;
   double radius;
-  RoundedElevatedButton({required this.title,this.color=Colors.green,required this.voidCallback,this.radius=20,});
+  double height;
+  double? width;
+  RoundedElevatedButton({super.key, required this.title,this.color=Colors.green,required this.voidCallback,this.radius=20,this.height=50,this.width});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-         onPressed: (){
-           voidCallback();
-         },
-      child: Text(title,style: styleForButton(Colors.white),),
-    style: ElevatedButton.styleFrom(backgroundColor: color,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
+    return SizedBox(
+      height: height,
+      width: width,
+      child: ElevatedButton(
+           onPressed: (){
+             voidCallback();
+           },
+      style: ElevatedButton.styleFrom(backgroundColor: color,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
+        child: Text(title,style: styleForButton(Colors.white),),
+      ),
     );
 
   }
-
 }
-
-class RoundedOutlineButton extends StatelessWidget{
-  String title='';
-  Color color;
-  VoidCallback voidCallback;
-  double radius;
-  RoundedOutlineButton({required this.title,this.color=Colors.green,required this.voidCallback,this.radius=20,});
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: (){
-        voidCallback();
-      },
-      child: Text(title,style: styleForButton(Colors.green),),
-        style: OutlinedButton.styleFrom(backgroundColor: color,side: BorderSide(color: Colors.green,width: 1))    );
-
-  }
-
-}
-
-
-/*ElevatedButton roundedElevatedButton(String title, Color bgColor,VoidCallback onPressedCallback, double radius) {
-  return ElevatedButton(
-    onPressed: () {
-      onPressedCallback();
-    },
-    style: ElevatedButton.styleFrom(
-        backgroundColor: bgColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius))),
-    child: Text(
-      title,
-      style: styleForButton(Colors.white),
-    ),
-  );
-}*/
 
 
 

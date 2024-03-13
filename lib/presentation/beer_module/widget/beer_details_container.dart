@@ -1,11 +1,11 @@
-import 'package:first_flutter_demo_app/Model/beer_details.dart';
+import 'package:first_flutter_demo_app/model/beer_details.dart';
 import 'package:first_flutter_demo_app/common_widget/round_elevated_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BeerDetailsContainer extends StatelessWidget{
   final BeerDetails beerModel;
-  BeerDetailsContainer({super.key, required this.beerModel});
+  const BeerDetailsContainer({super.key, required this.beerModel});
 
   @override
   Widget build(BuildContext context) {
@@ -62,13 +62,7 @@ class BeerDetailsContainer extends StatelessWidget{
                 overflow: TextOverflow.ellipsis,
               ),
               const Spacer(),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width,
-                height: 55,
-                child: RoundedElevatedButton(title: 'Add to cart',color: Colors.black,voidCallback: (){}),
-                // child: roundedElevatedButton(
-                //     'Add to cart', Colors.black, () async {}, 15),
-              )
+              RoundedElevatedButton(title: 'Add to cart',color: Colors.black,voidCallback: (){},height: 55,width: MediaQuery.sizeOf(context).width,)
             ],
           ),
         ),

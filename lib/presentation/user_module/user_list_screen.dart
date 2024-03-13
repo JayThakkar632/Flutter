@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:first_flutter_demo_app/Model/user_details.dart';
+import 'package:first_flutter_demo_app/model/user_details.dart';
+import 'package:first_flutter_demo_app/common_widget/top_widget.dart';
 import 'package:first_flutter_demo_app/presentation/user_module/user_details_screen.dart';
 import 'package:first_flutter_demo_app/shared_preferences/shared_prefs_key.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
@@ -8,10 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import '../../common_widget/appbar.dart';
 import '../../common_widget/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../services/remote_config_service.dart';
 
 class UserListScreen extends StatelessWidget {
@@ -19,9 +18,9 @@ class UserListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(title: "User List", context: context),
-      body: const UserList(),
+    return const TopWidget(
+      title: 'User List',
+      child: UserList(),
     );
   }
 }
@@ -34,7 +33,7 @@ class UserList extends StatefulWidget {
 }
 
 class _UserListState extends State<UserList> {
-  List<UserDetails> _userList = [];
+  final List<UserDetails> _userList = [];
   List<UserDetails> _searchedList = [];
   var searchText = "";
   var _isLoading = false;

@@ -1,4 +1,3 @@
-
 import '../data/model/beer_details.dart';
 
 abstract class PostState{}

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:first_flutter_demo_app/common_widget/top_widget.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/beer_card.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module/widget/filter/filter_dialog.dart';
@@ -8,7 +7,7 @@ import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../Model/beer_details.dart';
+import '../../model/beer_details.dart';
 import '../../common_widget/snack_bar.dart';
 import 'beer_details_screen.dart';
 import 'package:http/http.dart' as http;
