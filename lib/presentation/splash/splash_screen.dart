@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:first_flutter_demo_app/presentation/check_internet_connectivity/bloc/internet_bloc.dart';
+import 'package:first_flutter_demo_app/presentation/get_it/repository/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../shared_preferences/shared_prefs_key.dart';
@@ -21,9 +23,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Image.asset('assets/images/logo.jpeg'),
+    return Scaffold(
+      body:locator.get<InternetBloc>().checkStatus(context),
+      // body: Container(
+      //   color: Colors.white,
+      //   child: Image.asset('assets/images/logo.jpeg'),
+      // ),
     );
   }
 }
