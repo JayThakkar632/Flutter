@@ -5,6 +5,7 @@ import 'package:first_flutter_demo_app/presentation/beer_module_bloc/data/model/
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/data/repository/beer_repository.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/presentation/beer_details_screen.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/presentation/widget/beer_card.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module_bloc/presentation/widget/filter/filter_dialog.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,9 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
           title: "Beer List",
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.filter_alt),
-            onPressed: () {},
+            onPressed: () {
+              showFilterDialog(context);
+            },
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -156,5 +159,42 @@ class _BlocBeerDetailsState extends State<BlocBeerDetailsScreen> {
                       color: colors[colorIndex])));
         },
         child: BeerCard(beerDetails: beers, color: colors[colorIndex], index: index));
+  }
+
+  void showFilterDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            title: const Center(child: Text('Choose your Filter')),
+            content: FilterDialog(
+              onOkayCallback: (foodSearch, brewedBefore, brewedAfter) {
+                bloc.add(LoadedEvent(foodSearch: foodSearch,brewedBefore: brewedBefore,brewedAfter: brewedAfter));
+                // _page=0;
+                // beers.clear();
+                // foodName = foodSearch;
+                // this.brewedBefore = brewedBefore;
+                // this.brewedAfter = brewedAfter;
+                // getData();
+                Navigator.pop(context);
+              },
+              onResetCallBack: () {
+                // beers.clear();
+                // _page=0;
+                // foodName = '';
+                // brewedBefore = '';
+                // brewedAfter = '';
+                // getData();
+                Navigator.pop(context);
+              },
+              // foodSearch: foodName,
+              // brewedAfter: brewedAfter,
+              // brewedBefore: brewedBefore,
+            ));
+      },
+    );
   }
 }

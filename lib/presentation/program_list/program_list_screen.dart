@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:first_flutter_demo_app/presentation/get_it/presentation/load_images.dart';
+import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/presentation/bloc_user_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../common_widget/top_widget.dart';
@@ -44,6 +46,8 @@ class _ListingState extends State<Listing>{
     ColorName(color: Colors.green, name: 'User Listing',screeName: const UserListScreen()),
     ColorName(color: Colors.yellow, name: 'Beer Listing Using Cubit',screeName: const CubitBeerListScreen()),
     ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc',screeName: const BlocBeerListScreen()),
+    ColorName(color: Colors.cyanAccent, name: 'User Listing Using Bloc',screeName: const UserListScreenWithBloc()),
+    ColorName(color: Colors.purpleAccent, name: 'Get It',screeName: const LoadImagesScreen()),
   ];
 
   @override
