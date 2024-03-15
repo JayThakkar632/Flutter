@@ -11,7 +11,9 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import '../../common_widget/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../router/route_const.dart';
 import '../../services/remote_config_service.dart';
+import 'package:go_router/go_router.dart';
 
 class UserListScreen extends StatelessWidget {
   const UserListScreen({super.key});
@@ -132,11 +134,12 @@ class _UserListState extends State<UserList> {
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => UserDetailsScreen(
-                                        userDetails: _searchedList[index])));
+                            context.push(RouteConstant.userDetailsWithOutBloc,extra: _userList[index]);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => UserDetailsScreen(
+                            //             userDetails: _searchedList[index])));
                           },
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),

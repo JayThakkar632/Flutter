@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:first_flutter_demo_app/presentation/get_it/repository/locator.dart';
 import 'package:first_flutter_demo_app/presentation/home_screen/home_screen.dart';
+import 'package:first_flutter_demo_app/router/route_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -18,10 +19,11 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
   runApp(
-    DevicePreview(
-      enabled: true,
-      builder: (context) => const MyApp(),
-    ),
+      const MyApp()
+    // DevicePreview(
+    //   enabled: true,
+    //   builder: (context) => const MyApp(),
+    // ),
   );
 }
 
@@ -31,19 +33,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-
-
+    return MaterialApp.router(
+      routerConfig: MyRouter().router,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         MonthYearPickerLocalizations.delegate,
         FormBuilderLocalizations.delegate,
         FormBuilderLocalizations.delegate,
       ],
-      home: SplashScreen(),
     );
   }
 }

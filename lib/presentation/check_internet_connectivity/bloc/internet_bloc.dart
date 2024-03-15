@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:first_flutter_demo_app/common_widget/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +10,18 @@ class InternetBloc{
     checkStatus(BuildContext context) {
       connectivitySubscription =_connectivity.onConnectivityChanged.listen((result) {
         if(result == ConnectivityResult.wifi || result == ConnectivityResult.mobile){
-          showSnackBar('Internet Gained', context);
+          showDialog(context: context, builder: (BuildContext context){
+            return AlertDialog(
+              content:Image.asset('assets/images/gained_internet.gif',fit: BoxFit.fill),
+            );
+          });
         }else{
-          showSnackBar('Internet Lost', context);
+          showDialog(context: context, builder: (BuildContext context){
+            return AlertDialog(
+              content:Image.asset('assets/images/lost_internet.gif',fit: BoxFit.fill),
+            );
+          });
+
         }
       });
     }

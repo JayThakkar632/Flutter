@@ -4,6 +4,7 @@ import 'package:first_flutter_demo_app/presentation/settings/settings_screen.dar
 import 'package:first_flutter_demo_app/presentation/user_profile/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -25,6 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

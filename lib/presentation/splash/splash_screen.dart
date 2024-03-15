@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../shared_preferences/shared_prefs_key.dart';
 import '../home_screen//home_screen.dart';
 import '../login/login_screen.dart';
+import 'package:go_router/go_router.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -38,17 +40,12 @@ void navigateToScreen(BuildContext context) async {
   var isLogin = pref.getBool(SharedPreferencesKey.isLogin) ?? false;
 
   Future.delayed(const Duration(seconds: 5), (){
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-            isLogin ? const HomeScreen() : const LoginScreen()));
+    isLogin ? context.go('/') : context.go('/login_screen');
+    // Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) =>
+    //         isLogin ? const HomeScreen() : const LoginScreen()));
   });
-  // Timer(const Duration(seconds: 5), () {
-  //   Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) =>
-  //               isLogin ? const HomeScreen() : const LoginScreen()));
-  // });
+
 }

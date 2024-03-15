@@ -26,11 +26,9 @@ class BeerListRepository {
           List<dynamic> decodedData = json.decode(res.data);
           return decodedData.map((data) => BeerDetails.fromJson(data)).toList();
         }
-      }else{
-        return CustomException('msg');
       }
     }catch(e){
-
+      throw CustomException("hello");
     }
   }
 

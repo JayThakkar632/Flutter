@@ -13,6 +13,7 @@ import '../../shared_preferences/shared_prefs_key.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '../home_screen//home_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginFormKey {
   static const String email = "email";
@@ -167,39 +168,37 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: RoundedElevatedButton(
-                    width: MediaQuery.sizeOf(context).width,
+                      width: MediaQuery.sizeOf(context).width,
                       title: "Sign in",
                       color: Colors.green,
                       voidCallback: () async {
                         if (_formKey.currentState!.saveAndValidate()) {
                           final prefs = await SharedPreferences.getInstance();
-                          var sharedPrefData = prefs.getString(SharedPreferencesKey.signUpData) ?? "";
-                          final Map<String, dynamic> data = jsonDecode(sharedPrefData);
-                          var getEmail="";
-                          var getPassword="";
+                          var sharedPrefData = prefs
+                                  .getString(SharedPreferencesKey.signUpData) ??
+                              "";
+                          final Map<String, dynamic> data =
+                              jsonDecode(sharedPrefData);
+                          var getEmail = "";
+                          var getPassword = "";
                           data.forEach((key, value) {
-                            if(key == LoginFormKey.email){
-                              getEmail=value;
+                            if (key == LoginFormKey.email) {
+                              getEmail = value;
                             }
-                            if(key == LoginFormKey.psw){
-                              getPassword=value;
+                            if (key == LoginFormKey.psw) {
+                              getPassword = value;
                             }
                           });
                           if (_formKey.currentState
                                       ?.value[LoginFormKey.email] ==
                                   getEmail &&
-                              _formKey.currentState
-                                      ?.value[LoginFormKey.psw] ==
+                              _formKey.currentState?.value[LoginFormKey.psw] ==
                                   getPassword) {
-                            prefs.setBool(
-                                SharedPreferencesKey.isLogin, true);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen()));
+                            prefs.setBool(SharedPreferencesKey.isLogin, true);
+                            context.go('/');
                           } else {
-                            showSnackBar("Please provide valid credentials",
-                                context);
+                            showSnackBar(
+                                "Please provide valid credentials", context);
                           }
                         }
                       },
@@ -218,7 +217,7 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: RoundedOutlineButton(
-                    width: MediaQuery.sizeOf(context).width,
+                      width: MediaQuery.sizeOf(context).width,
                       title: "Sign in with Google",
                       color: Colors.white12,
                       voidCallback: () {}),
@@ -249,11 +248,7 @@ class _LoginState extends State<Login> {
                                 fontWeight: FontWeight.bold),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignUpScreenOne()));
+                                GoRouter.of(context).pushNamed('signup_screen');
                               })
                       ],
                     ),

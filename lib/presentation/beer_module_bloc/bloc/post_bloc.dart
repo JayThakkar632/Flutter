@@ -1,5 +1,6 @@
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/bloc/post_event.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/bloc/post_state.dart';
+import 'package:first_flutter_demo_app/presentation/beer_module_bloc/data/exceptions/custom_exception.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/data/model/beer_details.dart';
 import 'package:first_flutter_demo_app/presentation/beer_module_bloc/data/repository/beer_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,8 +26,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             page, event.searchedText, event.foodSearch, event.brewedBefore,
             event.brewedAfter);
         emit(SuccessState(posts: posts));
+      }on CustomException catch(e){
+        emit(FailureState([], error: e.msg));
       }catch (e) {
-        emit(FailureState([], error: e.toString()));
+        //emit(FailureState([], error: e.toString()));
       }
     });
 

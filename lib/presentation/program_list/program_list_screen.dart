@@ -1,18 +1,12 @@
-import 'dart:math';
-
 import 'package:first_flutter_demo_app/presentation/get_it/presentation/load_images.dart';
 import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/presentation/bloc_user_list_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../common_widget/top_widget.dart';
+import '../../router/route_const.dart';
 import '../beer_module/beer_list_screen.dart';
-import '../beer_module_bloc/data/repository/beer_repository.dart';
 import '../beer_module_bloc/presentation/bloc_beer_list_screen.dart';
-import '../beer_module_cubit/logic/post_cubit.dart';
 import '../beer_module_cubit/presentation/beer_module/cubit_beer_list_screen.dart';
 import '../user_module/user_list_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:go_router/go_router.dart';
 
 
 class ProgramListScreen extends StatelessWidget {
@@ -35,19 +29,20 @@ class ColorName {
   final Color color;
   final String name;
   final Widget screeName;
+  final String path;
 
-  ColorName({required this.color, required this.name,required this.screeName});
+  ColorName({required this.color, required this.name,required this.screeName,required this.path});
 }
 
 class _ListingState extends State<Listing>{
 
   final List<ColorName> arrayList = [
-    ColorName(color: Colors.red, name: 'Beer',screeName: const BeerListScreen()),
-    ColorName(color: Colors.green, name: 'User Listing',screeName: const UserListScreen()),
-    ColorName(color: Colors.yellow, name: 'Beer Listing Using Cubit',screeName: const CubitBeerListScreen()),
-    ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc',screeName: const BlocBeerListScreen()),
-    ColorName(color: Colors.cyanAccent, name: 'User Listing Using Bloc',screeName: const UserListScreenWithBloc()),
-    ColorName(color: Colors.purpleAccent, name: 'Get It',screeName: const LoadImagesScreen()),
+    ColorName(color: Colors.red, name: 'Beer',screeName: const BeerListScreen(),path: ''),
+    ColorName(color: Colors.green, name: 'User Listing',screeName: const UserListScreen(),path: RouteConstant.userListWithOutBloc),
+    ColorName(color: Colors.yellow, name: 'Beer Listing Using Cubit',screeName: const CubitBeerListScreen(),path: ''),
+    ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc',screeName: const BlocBeerListScreen(),path: ''),
+    ColorName(color: Colors.cyanAccent, name: 'User Listing Using Bloc',screeName: const UserListScreenWithBloc(),path: ''),
+    ColorName(color: Colors.purpleAccent, name: 'Get It',screeName: const LoadImagesScreen(),path: ''),
   ];
 
   @override
@@ -59,9 +54,10 @@ class _ListingState extends State<Listing>{
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,MaterialPageRoute(builder: (context) => arrayList[index].screeName),
-                );
+                context.go(RouteConstant.userListWithOutBloc);
+                // Navigator.push(
+                //   context,MaterialPageRoute(builder: (context) => arrayList[index].screeName),
+                // );
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
