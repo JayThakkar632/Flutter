@@ -37,12 +37,17 @@ class ColorName {
 class _ListingState extends State<Listing>{
 
   final List<ColorName> arrayList = [
-    ColorName(color: Colors.red, name: 'Beer',screeName: const BeerListScreen(),path: ''),
+    ColorName(color: Colors.red, name: 'Beer',screeName: const BeerListScreen(),path: RouteConstant.beerListWithOutBloc),
     ColorName(color: Colors.green, name: 'User Listing',screeName: const UserListScreen(),path: RouteConstant.userListWithOutBloc),
-    ColorName(color: Colors.yellow, name: 'Beer Listing Using Cubit',screeName: const CubitBeerListScreen(),path: ''),
-    ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc',screeName: const BlocBeerListScreen(),path: ''),
-    ColorName(color: Colors.cyanAccent, name: 'User Listing Using Bloc',screeName: const UserListScreenWithBloc(),path: ''),
-    ColorName(color: Colors.purpleAccent, name: 'Get It',screeName: const LoadImagesScreen(),path: ''),
+    ColorName(color: Colors.black, name: 'Beer Listing Using Cubit',screeName: const CubitBeerListScreen(),path: RouteConstant.beerListWithCubit),
+    ColorName(color: const Color(0xffb74093), name: 'Beer Listing Using Bloc',screeName: const BlocBeerListScreen(),path: RouteConstant.beerListWithBloc),
+    ColorName(color: Colors.cyanAccent, name: 'User Listing Using Bloc',screeName: const UserListScreenWithBloc(),path: RouteConstant.userListWithBloc),
+    ColorName(color: Colors.purpleAccent, name: 'Get It',screeName: const LoadImagesScreen(),path: RouteConstant.getIt),
+    ColorName(color: Colors.grey, name: 'Json annotation',screeName: const LoadImagesScreen(),path: RouteConstant.jsonAnnotation),
+    ColorName(color: Colors.redAccent, name: 'Equatable',screeName: const LoadImagesScreen(),path: RouteConstant.equatable),
+    ColorName(color: Colors.blue, name: 'Freezed',screeName: const LoadImagesScreen(),path: RouteConstant.freezed),
+    ColorName(color: Colors.red, name: 'Retrofit',screeName: const LoadImagesScreen(),path: RouteConstant.retrofit),
+    ColorName(color: Colors.black, name: 'Logger',screeName: const LoadImagesScreen(),path: RouteConstant.logger),
   ];
 
   @override
@@ -54,7 +59,7 @@ class _ListingState extends State<Listing>{
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                context.go(RouteConstant.userListWithOutBloc);
+                context.push(arrayList[index].path);
                 // Navigator.push(
                 //   context,MaterialPageRoute(builder: (context) => arrayList[index].screeName),
                 // );

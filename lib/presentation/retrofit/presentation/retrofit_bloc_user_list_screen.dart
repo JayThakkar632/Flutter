@@ -1,46 +1,38 @@
+import 'dart:convert';
+
 import 'package:first_flutter_demo_app/common_widget/top_widget.dart';
-import 'package:first_flutter_demo_app/presentation/user_module/user_details_screen.dart';
-import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/bloc/user_bloc.dart';
-import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/bloc/user_event.dart';
-import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/bloc/user_state.dart';
-import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/data/repository/user_repository.dart';
+import 'package:first_flutter_demo_app/presentation/retrofit/bloc/user_bloc.dart';
+import 'package:first_flutter_demo_app/presentation/retrofit/data/model/user_model.dart';
 import 'package:first_flutter_demo_app/ui_helper/common_style.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
 
-import '../../../router/route_const.dart';
+import '../bloc/user_state.dart';
+import '../data/service/api_service.dart';
 
-class UserListScreenWithBloc extends StatelessWidget {
-  const UserListScreenWithBloc({super.key});
+class UserListScreenWithBlocRetrofit extends StatelessWidget {
+  const UserListScreenWithBlocRetrofit({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (BuildContext context) => UserRepository(),
-      child: const TopWidget(
-        title: 'User List with Bloc',
-        child: UserListWithBloc(),
-      ),
-    );
+    return TopWidget(child: UserListWithBlocRetrofit(), title: 'User List Retrofit');
   }
 }
 
-class UserListWithBloc extends StatefulWidget {
-  const UserListWithBloc({super.key});
+class UserListWithBlocRetrofit extends StatefulWidget {
+  const UserListWithBlocRetrofit({super.key});
 
   @override
-  State<UserListWithBloc> createState() => _UserListWithBlocState();
+  State<UserListWithBlocRetrofit> createState() => _UserListWithBlocRetrofitState();
 }
 
-class _UserListWithBlocState extends State<UserListWithBloc> {
+class _UserListWithBlocRetrofitState extends State<UserListWithBlocRetrofit> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBloc>(
-      create: (context) =>
-          UserBloc(context.read<UserRepository>())..add(UserLoadedEvent()),
+      create: (context) => UserBloc(apiService:ApiService(Dio())..getData()),
       child: Scaffold(
         body: Stack(
           children: [
@@ -51,7 +43,6 @@ class _UserListWithBlocState extends State<UserListWithBloc> {
                   child: TextField(
                     decoration: editText("Search here...", 20, false),
                     onChanged: (value) {
-                      _searchTextFromList(value);
                     },
                   ),
                 ),
@@ -70,19 +61,12 @@ class _UserListWithBlocState extends State<UserListWithBloc> {
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
-                            context.push(RouteConstant.userDetailsWithOutBloc,extra: state.userDetailsList[index]);
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => UserDetailsScreen(
-                            //             userDetails:
-                            //                 state.userDetailsList[index])));
                           },
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: ListTile(
                                 title:
-                                    Text(state.userDetailsList[index].title!),
+                                    Text(state.userDetailsList[index].title),
                                 leading: Text(
                                     state.userDetailsList[index].id.toString()),
                                 trailing: const Icon(Icons.person),
@@ -102,9 +86,6 @@ class _UserListWithBlocState extends State<UserListWithBloc> {
                   if (state is UserErrorState) {
                     return Center(child: Text(state.error));
                   }
-                  if (state is InternetLostState) {
-                    return const Center(child: Text('Internet Lost!!'));
-                  }
                   return const SizedBox();
                 })),
               ],
@@ -115,15 +96,4 @@ class _UserListWithBlocState extends State<UserListWithBloc> {
     );
   }
 
-  void _searchTextFromList(String value) {
-    // setState(() {
-    //   _searchedList = _userList
-    //       .where(
-    //         (user) => ((user.title ?? "").toLowerCase().contains(
-    //               value.toLowerCase(),
-    //             )),
-    //       )
-    //       .toList();
-    // });
-  }
 }

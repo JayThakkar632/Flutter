@@ -18,8 +18,9 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     on<UserLoadedEvent>((event,emit)=>emit(UserSuccessState(userDetailsList: [])));
     connectivitySubscription = _connectivity.onConnectivityChanged.listen((result) async {
       if(result == ConnectivityResult.mobile || result == ConnectivityResult.wifi){
-        List<UserDetails>userDetailsList;
+        emit(UserLoadingState());
         try{
+          List<UserDetails>userDetailsList;
           userDetailsList=await _userRepository.getUserList();
           emit(UserSuccessState(userDetailsList: userDetailsList));
         }catch(e){
