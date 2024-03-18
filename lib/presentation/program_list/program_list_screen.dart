@@ -48,6 +48,7 @@ class _ListingState extends State<Listing>{
     ColorName(color: Colors.blue, name: 'Freezed',screeName: const LoadImagesScreen(),path: RouteConstant.freezed),
     ColorName(color: Colors.red, name: 'Retrofit',screeName: const LoadImagesScreen(),path: RouteConstant.retrofit),
     ColorName(color: Colors.black, name: 'Logger',screeName: const LoadImagesScreen(),path: RouteConstant.logger),
+    ColorName(color: Colors.green, name: 'WebView',screeName: const LoadImagesScreen(),path: RouteConstant.webView),
   ];
 
   @override

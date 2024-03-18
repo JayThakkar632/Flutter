@@ -13,6 +13,8 @@ import 'package:first_flutter_demo_app/presentation/signup/signup_screen.dart';
 import 'package:first_flutter_demo_app/presentation/splash/splash_screen.dart';
 import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/presentation/bloc_user_details_screen.dart';
 import 'package:first_flutter_demo_app/presentation/user_module_with_bloc/presentation/bloc_user_list_screen.dart';
+import 'package:first_flutter_demo_app/presentation/web_view/camera_screen.dart';
+import 'package:first_flutter_demo_app/presentation/web_view/web_view.dart';
 import 'package:first_flutter_demo_app/router/route_const.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +28,7 @@ import '../presentation/user_module/user_details_screen.dart';
 import '../presentation/user_module/user_list_screen.dart';
 
 class MyRouter {
-  GoRouter router = GoRouter(initialLocation: RouteConstant.splashScreen, routes: [
+  GoRouter router = GoRouter(initialLocation: RouteConstant.homeScreen, routes: [
     GoRoute(
         name: 'splash_screen',
         path: RouteConstant.splashScreen,
@@ -151,6 +153,18 @@ class MyRouter {
         path: RouteConstant.logger,
         pageBuilder: (context, state) {
           return  MaterialPage(child: Loggers());
+        }),
+    GoRoute(
+        name: 'web_view',
+        path: RouteConstant.webView,
+        pageBuilder: (context, state) {
+          return  MaterialPage(child: WebViewDemo());
+        }),
+    GoRoute(
+        name: 'camera',
+        path: RouteConstant.cameraScreen,
+        pageBuilder: (context, state) {
+          return  MaterialPage(child: CameraScreen());
         }),
   ]);
 }

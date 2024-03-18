@@ -47,5 +47,10 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>Allow access to photo library</string>
+    <key>NSCameraUsageDescription</key>
+    <string>QR code scanner needs camera access to scan QR codes</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>QR code scanner needs photos access to get QR code from photo library</string>
 </dict>
 </plist>

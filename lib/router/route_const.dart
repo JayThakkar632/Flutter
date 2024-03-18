@@ -18,5 +18,7 @@ class RouteConstant{
   static const freezed='/freezed';
   static const retrofit='/retrofit';
   static const logger='/logger';
+  static const webView='/web_view';
+  static const cameraScreen='/camera';
 
 }

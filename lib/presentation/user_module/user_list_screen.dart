@@ -135,11 +135,6 @@ class _UserListState extends State<UserList> {
                         return GestureDetector(
                           onTap: () {
                             context.push(RouteConstant.userDetailsWithOutBloc,extra: _userList[index]);
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => UserDetailsScreen(
-                            //             userDetails: _searchedList[index])));
                           },
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),

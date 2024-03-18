@@ -1,5 +1,3 @@
-import 'package:first_flutter_demo_app/presentation/retrofit/data/model/user_model.dart';
-
 import '../data/service/api_service.dart';
 import 'user_event.dart';
 import 'user_state.dart';
